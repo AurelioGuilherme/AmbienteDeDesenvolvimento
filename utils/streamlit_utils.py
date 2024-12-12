@@ -15,4 +15,9 @@ def load_notebook(path_notebook):
     html_body, _ = html_exporter.from_notebook_node(notebook)
 
     # Exibindo o conteúdo do notebook como HTML
-    st.components.v1.html(html_body, height=600,scrolling=True)#width=1100, height=600, scrolling=True)
+    st.components.v1.html(html_body, height=600,scrolling=True)
+
+
+def titulo_centralizado(texto_de_titulo, size='h1'):
+     st.markdown(f"""<{size} style="text-align: center;">{texto_de_titulo}</{size}>""", unsafe_allow_html=True)
+  
