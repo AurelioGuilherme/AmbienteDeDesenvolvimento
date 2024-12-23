@@ -22,6 +22,7 @@ if selected =="HOME":
 if selected == "PROJECTS":
     st.write("Projects")
 
+st.link_button("MLFLOW","https://dagshub.com/AurelioGuilherme/AmbienteDeDesenvolvimento.mlflow")
 
 # BACKLOG
 st.divider()
