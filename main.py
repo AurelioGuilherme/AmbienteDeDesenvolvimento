@@ -1,8 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 from utils import streamlit_utils, layout_indicium
-import dagshub
-dagshub.init(repo_owner='AurelioGuilherme', repo_name='AmbienteDeDesenvolvimento', mlflow=True)
+
 
 # Layout 
 layout_indicium.layout_custom()
