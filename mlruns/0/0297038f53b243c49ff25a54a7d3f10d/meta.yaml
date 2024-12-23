@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/0297038f53b243c49ff25a54a7d3f10d/artifacts
+end_time: 1734554295946
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 0297038f53b243c49ff25a54a7d3f10d
+run_name: magnificent-hog-692
+run_uuid: 0297038f53b243c49ff25a54a7d3f10d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1734554295831
+status: 4
+tags: []
+user_id: aurelio

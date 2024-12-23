@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1734554807832
+current_stage: None
+description: ''
+last_updated_timestamp: 1734554807832
+name: RF_Classifier_pollution_dataset
+run_id: 8177a6d3adbf46d4b44f10bfe4975793
+run_link: ''
+source: file:///home/aurelio/projetos/Python/indicium/mlruns/612820237712713706/8177a6d3adbf46d4b44f10bfe4975793/artifacts/classification_rf_model
+status: READY
+status_message: null
+storage_location: file:///home/aurelio/projetos/Python/indicium/mlruns/612820237712713706/8177a6d3adbf46d4b44f10bfe4975793/artifacts/classification_rf_model
+user_id: null
+version: 1
