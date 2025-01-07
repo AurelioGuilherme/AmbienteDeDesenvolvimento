@@ -19,3 +19,7 @@ h3 {
     font-family: 'Titillium Web', sans-serif !important;
     font-size: 26px; 
 }
+
+.st-emotion-cache-6qob1r { /* Classe do conteúdo da barra lateral */
+    background: linear-gradient(to bottom, #0081BE, #333b8f); /* Gradiente do topo para o final */
+}
