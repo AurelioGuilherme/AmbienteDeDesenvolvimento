@@ -11,7 +11,7 @@ def load_notebook(path_notebook):
         notebook = nbformat.reads(notebook_content, as_version=4)
 
     # Convertendo o notebook para HTML
-    html_exporter = HTMLExporter()
+    html_exporter = HTMLExporter(template_name='classic')
     html_body, _ = html_exporter.from_notebook_node(notebook)
 
     # Exibindo o conteúdo do notebook como HTML
