@@ -4,7 +4,7 @@ from utils import streamlit_utils,layout_indicium
 
 layout_indicium.layout_custom()
 
-streamlit_utils.titulo_centralizado("Modeling, Evaluation e Deployment")
+streamlit_utils.titulo_personalizado("Modeling, Evaluation e Deployment")
 
 st.write("Elaborar uma forma de utilizar multiplos modelos e exibir os resultados")
 

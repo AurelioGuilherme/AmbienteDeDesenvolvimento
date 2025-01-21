@@ -5,7 +5,7 @@ import streamlit as st
 layout_indicium.layout_custom()
 
 
-streamlit_utils.titulo_centralizado("Data Preparation")
+streamlit_utils.titulo_personalizado("Data Preparation")
 
 st.write("Detalhar todo o processo de tratamento de dados e enriquecimento")
 st.write("Fornecer amostras do antes e depois")

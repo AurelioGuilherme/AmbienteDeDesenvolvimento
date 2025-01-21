@@ -18,6 +18,7 @@ def load_notebook(path_notebook):
     st.components.v1.html(html_body, height=600,scrolling=True)
 
 
-def titulo_centralizado(texto_de_titulo, size='h1'):
-     st.markdown(f"""<{size} style="text-align: center;">{texto_de_titulo}</{size}>""", unsafe_allow_html=True)
-  
+         
+def titulo_personalizado(texto_de_titulo, size='h1', color=None, text_align="center"):
+    style = f"text-align: {text_align};{f' color: {color};' if color else ''}"
+    st.markdown(f"""<{size} style="{style}">{texto_de_titulo}</{size}>""", unsafe_allow_html=True)  

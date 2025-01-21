@@ -2,7 +2,7 @@ import streamlit as st
 from utils import streamlit_utils,layout_indicium
 
 layout_indicium.layout_custom()
-streamlit_utils.titulo_centralizado("Bussines e Data Understanding")
+streamlit_utils.titulo_personalizado("Data Understanding")
 
 st.write("Fornecer possiveis KPIs")
 st.write("Incluir um resumo estatístico")
