@@ -2,8 +2,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from utils import streamlit_utils, layout_indicium
 
-# Layout 
-st.set_page_config(layout="wide")
+# Layout
 layout_indicium.layout_custom()
 
 
@@ -12,7 +11,7 @@ st.divider()
 
 # Menu horizontal
 selected = option_menu(menu_title=None,
-                       options=["Descrição do Projeto","Objetivo"],
+                       options=["Descrição do Projeto","Objetivos e Estrutura"],
                        icons=["house", "list-task"],
                        orientation="horizontal")
 
@@ -57,24 +56,79 @@ if selected =="Descrição do Projeto":
                     estações e opera ininterruptamente, funcionando 24 horas por dia, 7 dias por semana.    
              """)
     with righ_column:
-        st.image("imgs/ny.jpg")
+        st.image("imgs/ny.jpg", caption="Empire State Building e Estatua da Liberdade - Charly Triballeau/AFP")
 
     streamlit_utils.titulo_personalizado("Mercado imobiliário", size="h3", text_align='left', color="#0081BE")
+
+    st.write("""
+                O mercado imobiliário nova-iorquino oferece uma ampla variedade de opções para compradores 
+                e investidores, com propriedades que atendem a diferentes perfis e necessidades. 
+                Entre os principais tipos de imóveis, destacam-se os apartamentos de luxo, as residências 
+                familiares, os lofts e os imóveis comerciais.
+                Investir no mercado imobiliário de Nova York oferece diversas oportunidades, mas também 
+                apresenta desafios que devem ser pontuados. Isto é, desde os preços elevados até as rígidas 
+                regulamentações imobiliárias. A cidade é conhecida por ter alguns dos imóveis mais caros do mundo, 
+                especialmente em áreas como Manhattan e Brooklyn, onde os valores por metro quadrado podem, facilmente, 
+                ultrapassar a marca de milhões de dólares. 
+
+                Além disso, especificamente tratando-se do mercado de locações de curto prazo, mudanças recentes
+                na legislação local impactaram diretamente. Desde setembro de 2023, :blue[uma lei exige que os imóveis 
+                não sejam alugados por períodos inferiores a 30 dias], a menos que os proprietários estejam 
+                presentes durante toda a estadia, com um limite máximo de dois hóspedes. Também é proibida a 
+                locação de cômodos separados, e os proprietários precisam pagar uma taxa de regularização de **US\\$ 145,00**. 
+                Infrações às regras podem resultar em multas de até **US\\$ 7.500,00**.
+             
+                Essas mudanças representam um desafio adicional para o projeto que precisa se adaptar enquanto explora 
+                as oportunidades de um dos mercados imobiliários mais atrativos e competitivos do mundo.""")
     
-#    responder: 
-# - Sobre Nova York
-# - Mercado de precificação
-# - Economia 
+    with st.expander("Fontes"):
+        st.write("""
+                    [Exame - 8.set.2023: Crise de aluguel? Entenda por que Nova York proibiu reservas curtas no Airbnb](https://exame.com/mundo/crise-de-aluguel-entenda-por-que-nova-york-proibiu-reservas-curtas-no-airbnb/)
+                    
+                    [Folha de São Paulo - 16.jan.2025: NY teve 2º maior número de visitantes em 2024 e prevê recorde em 2025](https://www1.folha.uol.com.br/turismo/2025/01/ny-teve-2o-maior-numero-de-visitantes-em-2024-e-preve-quebrar-recorde-em-2025.shtml)
+                """)
+    
 
 
-if selected == "Objetivo":
-    st.write("Objetivo")
+if selected == "Objetivos e Estrutura":
+    streamlit_utils.titulo_personalizado("Objetivo", size="h3", text_align='left', color="#0081BE")
+    st.write("""
+                O principal objetivo é :blue-background[**desenvolver um modelo de previsão de preços a partir 
+                do dataset oferecido**] contendo a ducumentação, histórico de desevolvimento e avaliação dos modelos testados 
+                utilizando as ferramentas de MLOps para garantir a eficiência, reprodutibilidade e escalabilidade.
+            """)
+    st.divider()
+    streamlit_utils.titulo_personalizado("Estrutura", size="h3", text_align='left', color="#0081BE")
+    st.write("""
+                **Entendimento do Negócio:**
+                Trata-se da descrição geral do projeto e a contextualização sobre o problema proposto. 
 
+                    - Sobre Nova York.
+                    - Mercado imobiliário.
 
+                **Entendimento dos Dados:** 
+                Análise dos dados fornecidos, identificando os problemas
+
+                    - Analise inicial (Estudo das variáveis)
+                    - Dicionário dos dados
+                    - Outliers
+                    - Dados Ausentes
+                    - Dados duplicados 
+                    - Hipóteses de negócio relacionadas (Propostas pelo desafio e criadas)
+        
+                **Data Preparation:**
+                 Descrição e motivação para as transformações nos dados.
+
+                    - Dados categoricos 
+                    - Dados contínuos
+
+                **Modelagem:**
+                 Descrição dos modelos testados e etapas do desenvolvimento e avalição dos modelos.
+
+                    - MlFlow UI
+                    - Conformal Prediction
+                    - Métricas        
+            """)
 
 
 #st.link_button("MLFLOW","https://dagshub.com/AurelioGuilherme/AmbienteDeDesenvolvimento.mlflow")
-
-
-
-

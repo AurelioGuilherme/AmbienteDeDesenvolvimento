@@ -7,9 +7,6 @@ secondaryBackgroundColor = "#0081BE"
 [server]
 headless=true
 
-[layout]
-wideMode=true
-
 [client]
 showSidebarNavigation = false
 
