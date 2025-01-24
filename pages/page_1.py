@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from utils import streamlit_utils, layout_indicium
+from utils import streamlit_utils, layout_indicium, stats_utils
 import pandas as pd
 import plotly.express as px
 
@@ -10,15 +10,17 @@ df = streamlit_utils.carrega_dados_cache()
 streamlit_utils.titulo_personalizado("Data Understanding", color="#0081BE")
 st.divider()
 
-
 # Menu horizontal
 selected = option_menu(menu_title=None,
-                       options=["Descrição dos Dados","Análise Descritiva","Análise Inferencial"],
-                       icons=["list-task", "list-task", "list-task"],
+                       options=["Descrição dos Dados",
+                                "Análise Descritiva",
+                                "Análise Inferencial",
+                                "Resumo"],
+                       icons=["list-task", "list-task", "list-task", "list-task"],
                        orientation="horizontal")
+
 if selected == "Descrição dos Dados":
     streamlit_utils.titulo_personalizado("Descrição dos Dados", text_align="left" ,color="#0081BE", size='h2')
-
     st.write('''
              A base de dados fornecida contém :blue[16 colunas] e :blue[48.894 linhas], 
              abaixo estão as descrições detalhadas juntamente com a tipagem dos dados:
@@ -40,12 +42,13 @@ if selected == "Descrição dos Dados":
              **:orange[calculado_host_listings_count]** - Contém a quantidade de listagens por host (Tipo: :green[int64])  
              **:orange[disponibilidade_365]** - Contém o número de dias em que o anúncio está disponível para reserva (Tipo: :green[int64])  
             ''')
+    st.divider()
     st.dataframe(df)
 
 
 
 if selected =="Análise Descritiva":
-    streamlit_utils.titulo_personalizado("Dados faltantes", text_align="left" ,color="#0081BE", size='h2')
+    streamlit_utils.titulo_personalizado("Dados Faltantes", text_align="left" ,color="#0081BE", size='h2')
     st.write('''
                 O conjunto de dados apresenta a seguinte quantidade de dados faltantes, 
                 conforme detalhado abaixo:
@@ -69,7 +72,9 @@ if selected =="Análise Descritiva":
                  set(df[df["ultima_review"].isnull()].index == df[df["reviews_por_mes"].isnull()].index) 
                 ''')
          st.write('{np.True_}')
-    streamlit_utils.titulo_personalizado("Dados duplicados", text_align="left" ,color="#0081BE", size='h2')
+
+
+    streamlit_utils.titulo_personalizado("Dados Duplicados", text_align="left" ,color="#0081BE", size='h2')
     st.write('''
                Não identifiquei valores duplicados no conjunto de dados, 
                e as colunas que apresentam duplicações não indicam erros.
@@ -86,14 +91,36 @@ if selected =="Análise Descritiva":
                         lista.append(col)
                 
                 print(lista_colunas_com_valores_duplicados)
-                ''')
-    streamlit_utils.titulo_personalizado("Valores Discrepantes", text_align="left" ,color="#0081BE", size='h2')
+                ''')      
+    st.divider()
+
+
+    streamlit_utils.titulo_personalizado("Análise de Dados Contínuos", text_align="left" ,color="#0081BE", size='h2')
     st.write('''
-             Para analisar os valores Outliers (valores discrepantes), selecionarei as colunas:
+             Para analisar os dados contínuos, selecionarei as seguintes colunas:
               :orange[price], :orange[minimo_noites], :orange[numero_de_reviews], :orange[reviews_por_mes], 
               :orange[calculado_host_listings_count], :orange[disponibilidade_365].
              ''')
- 
+    
+    valores_continuos = ['price', 'minimo_noites', 'numero_de_reviews', 
+                         'reviews_por_mes', 'calculado_host_listings_count',
+                         'disponibilidade_365']
+    valores_continuos_df = df[valores_continuos].describe().T
+    valores_continuos_df['Valores únicos'] = df[valores_continuos].nunique()
+    
+    st.write(valores_continuos_df)
+
+    st.write('''
+                Com o método :blue[**pd.describe()**] é possivel identificar algumas possíveis discrepancias:
+             
+             - A média está distante da mediana (50%) em todas as colunas, isso indica uma **distribuição assimétrica**.
+             - A valores máximos discrepantes em todas as colunas exceto pela coluna :orange[disponibilidade_365]
+             - Os dados possuem alta variabilidade
+             - A coluna :orange[price] possui valores mínimos :blue[**"0"**], possivelmente um erro.
+            ''')
+
+
+    streamlit_utils.titulo_personalizado("Valores Discrepantes", text_align="left" ,color="#0081BE", size='h3')
     with st.expander('Gráficos Boxplot'):
             col_1, col_2, col_3 = st.columns(3)
             with col_1:
@@ -127,7 +154,7 @@ if selected =="Análise Descritiva":
                 fig = px.box(df, y='disponibilidade_365')
                 st.plotly_chart(fig)
 
-    with st.expander('Gráficos histograma'):
+    with st.expander('Gráficos Histograma'):
             col_1, col_2, col_3 = st.columns(3)
             with col_1:
                 streamlit_utils.titulo_personalizado("price", text_align="left" ,color="#0081BE", size='h3')
@@ -159,10 +186,100 @@ if selected =="Análise Descritiva":
                 streamlit_utils.titulo_personalizado("disponibilidade_365", text_align="left" ,color="#0081BE", size='h3')
                 fig = px.histogram(df, x='disponibilidade_365')
                 st.plotly_chart(fig)
+        
+    st.write('''
+                Ao analisar os gráficos apresentados acima, é possível comprovar a presença de 
+                outliers nos dados. Para compreender melhor essas discrepâncias, será realizada 
+                uma análise detalhada de cada coluna individualmente.
+             ''')
+    st.divider()
+    
+    
+    streamlit_utils.titulo_personalizado("Exploração Individual das Variáveis ", text_align="left" ,color="#0081BE", size='h3')        
+    
+    
+    st.write('''
+                 :blue-background[**price**]
+            ''')
+    with st.expander('Exibir Análise'):
+        st.write('**price menor do que 1**')
+        st.dataframe(df.query('price < 1'))
+        st.write('''
+                 - São imóveis diferentes de acordo com a latitude e longitude.
+                 - Há imóveis que pertencem ao mesmo proprietário neste grupo de dados.
+
+                 :red[**Esses valores serão tratados na etapa de Data Preparation, podendo ser removidos ou preenchidos**]
+             
+                 ''')
+        st.divider()
+
+
+        stats_utils.exibe_analise_q3_outliers(df, df.price)
+
+
+    st.write('''
+                :blue-background[**minimo_noites**]
+            ''')
+    with st.expander('Exibir Análise'):
+        stats_utils.exibe_analise_q3_outliers(df, df.minimo_noites)
+
+
+    st.write('''
+                :blue-background[**numero_de_reviews**]
+            ''')
+    with st.expander('Exibir Análise'):
+        stats_utils.exibe_analise_q3_outliers(df,df.numero_de_reviews)
+    
+    
+    st.write('''
+                :blue-background[**reviews_por_mes**]
+            ''')
+    with st.expander('Exibir Análise'):
+        stats_utils.exibe_analise_q3_outliers(df, df.reviews_por_mes)
+
+
+    st.write('''
+                :blue-background[**calculado_host_listings_count**]
+            ''')
+    with st.expander('Exibir Análise'):
+        stats_utils.exibe_analise_q3_outliers(df, df.calculado_host_listings_count)
+    
+    
+    st.write('''
+                :blue-background[**disponibilidade_365**]
+            ''')
+    with st.expander('Exibir Análise'):
+        stats_utils.exibe_analise_q3_outliers(df, df.disponibilidade_365)
+
+    st.write('''
+             Os valores de :red[price que são menores que 1] serão removidos ou preenchidos na etapa 
+             de Data Preparation, julgo esses dados como valores incorretos devido algum erro de coleta.
+
+             Embora exista a presença de :red[outliers], a remoção ou corte desses valores 
+             julgo como não necessária, :red[*neste momento], pois os dados permanecem dentro 
+             de uma faixa aceitável e condizente com a realidade, não aparentando um erro de coleta. 
+             
+             No entanto, na etapa de Data Preparation, a normalização deve ser realizada 
+             considerando a presença desses valores para a escolha do algoritmo de normalização.
+
+             - :red[**Neste momento**] Caso seja constado que a performance do modelo é insulficiente 
+             na etapa de evaluation, pode ser considerado algum tratamento de dados adicional nos valores outliers
+             para a melhoria do modelo. 
+             ''')
+    st.divider()
+
+    streamlit_utils.titulo_personalizado("Análise de Dados Categóricos", text_align="left" ,color="#0081BE", size='h2')
 
 
 
 
-streamlit_utils.titulo_personalizado("NOTEBOOK JUPYTER", text_align="left" ,color="#0081BE", size='h2')        
-with st.expander('Exibir Notebook'):
-    streamlit_utils.load_notebook('./Notebooks/data_understanding.ipynb')
+
+
+
+if selected =="Resumo":
+    streamlit_utils.titulo_personalizado("Resumo", text_align="left" ,color="#0081BE", size='h1')        
+
+
+    streamlit_utils.titulo_personalizado("NOTEBOOK JUPYTER", text_align="left" ,color="#0081BE", size='h2')        
+    with st.expander('Exibir Notebook'):
+        streamlit_utils.load_notebook('./Notebooks/data_understanding.ipynb')

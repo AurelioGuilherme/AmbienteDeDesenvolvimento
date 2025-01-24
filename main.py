@@ -91,10 +91,19 @@ if selected =="Descrição do Projeto":
 
 if selected == "Objetivos e Estrutura":
     streamlit_utils.titulo_personalizado("Objetivo", size="h3", text_align='left', color="#0081BE")
-    st.write("""
-                O principal objetivo é :blue-background[**desenvolver um modelo de previsão de preços a partir 
-                do dataset oferecido**] contendo a ducumentação, histórico de desevolvimento e avaliação dos modelos testados 
-                utilizando as ferramentas de MLOps para garantir a eficiência, reprodutibilidade e escalabilidade.
+    st.write("""             
+                O principal objetivo é a experiênciação das ferramentas usadas com fim de 
+                :blue-background[**desenvolver um modelo de previsão de preços a partir 
+                do dataset oferecido**] contendo a ducumentação, histórico de desevolvimento 
+                e avaliação dos modelos testados utilizando frameworks de MLOps para 
+                garantir a eficiência, reprodutibilidade e escalabilidade. 
+
+                Vale ressaltar justamente o uso do framework Streamlit para criar a aplicação Web interativa, 
+                contendo todas as etapas do desenvolvimento seguindo o framework CRISP-DM como metodologia. 
+
+
+             
+
             """)
     st.divider()
     streamlit_utils.titulo_personalizado("Estrutura", size="h3", text_align='left', color="#0081BE")
