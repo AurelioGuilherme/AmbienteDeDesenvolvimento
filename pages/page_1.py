@@ -2,6 +2,8 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from utils import streamlit_utils, layout_indicium, stats_utils
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 import plotly.express as px
 
 
@@ -98,8 +100,12 @@ if selected =="Análise Descritiva":
     streamlit_utils.titulo_personalizado("Análise de Dados Contínuos", text_align="left" ,color="#0081BE", size='h2')
     st.write('''
              Para analisar os dados contínuos, selecionarei as seguintes colunas:
-              :orange[price], :orange[minimo_noites], :orange[numero_de_reviews], :orange[reviews_por_mes], 
-              :orange[calculado_host_listings_count], :orange[disponibilidade_365].
+              - :orange[price]
+              - :orange[minimo_noites]
+              - :orange[numero_de_reviews] 
+              - :orange[reviews_por_mes]
+              - :orange[calculado_host_listings_count]
+              - :orange[disponibilidade_365]
              ''')
     
     valores_continuos = ['price', 'minimo_noites', 'numero_de_reviews', 
@@ -262,23 +268,85 @@ if selected =="Análise Descritiva":
              No entanto, na etapa de Data Preparation, a normalização deve ser realizada 
              considerando a presença desses valores para a escolha do algoritmo de normalização.
 
+             As variáveis :orange[minimo_noites], :orange[numero_de_reviews], :orange[calculado_host_listings_count], 
+             :orange[disponibilidade_365] podem ser classificadas ou transformadas em variáveis categóricas 
+             com agrupamentos melhorando a homogeneidade na etapa de Data Preparation.
+
              - :red[**Neste momento**] Caso seja constado que a performance do modelo é insulficiente 
              na etapa de evaluation, pode ser considerado algum tratamento de dados adicional nos valores outliers
              para a melhoria do modelo. 
              ''')
     st.divider()
 
-    streamlit_utils.titulo_personalizado("Análise de Dados Categóricos", text_align="left" ,color="#0081BE", size='h2')
+    streamlit_utils.titulo_personalizado("Análise de Dados Categóricos", 
+                                         text_align="left", 
+                                         color="#0081BE", 
+                                         size='h2')
+
+    st.write('''
+            Para analisar os dados categóricos, selecionarei as seguintes colunas:
+             - :orange[host_id]
+             - :orange[bairro_group] 
+             - :orange[bairro]
+             - :orange[room_type]
+            ''') 
+    st.divider() 
+    streamlit_utils.titulo_personalizado("Exploração Individual das Variáveis", 
+                                         text_align="left", 
+                                         color="#0081BE", 
+                                         size='h3')
+
+    col_1, col_2 = st.columns(2)
+    with col_1:
+
+        st.write(':blue-background[host_id]')
+        host_counts = df['host_id'].value_counts().reset_index()
+        host_counts['host_id'] = host_counts['host_id'].astype('category')
+        host_counts.columns = ['host_id', 'num_anuncios']
+        host_counts = host_counts.head(10)
+        st.write('Top 10 Hosts com Mais Anúncios')
+        st.write(host_counts)
+
+        st.write('quantos hosts diferentes possuem')
+        st.write('média de casas')
+ 
+
+    with col_2:
+        st.write(':blue-background[bairro_group]')
+        
+        st.write('quantos bairro_group diferentes possuem')
+        st.write('quais bairro_group tem mais')
+
+
+
+
+    col_3, col_4 = st.columns(2) 
+    with col_3:
+        st.write(':blue-background[bairro]')
+
+        st.write('quantos bairro diferentes possuem')
+        st.write('quais bairro tem mais')
+   
+    with col_4:
+        st.write(':blue-background[room_type]')
+
+        st.write('quantos room_type diferentes possuem')    
+        st.write('quais room_type tem mais')
 
 
 
 
 
 
+
+
+
+
+    st.divider()
+    streamlit_utils.titulo_personalizado("Exploração Multivariada", text_align="left" ,color="#0081BE", size='h2')
 
 if selected =="Resumo":
-    streamlit_utils.titulo_personalizado("Resumo", text_align="left" ,color="#0081BE", size='h1')        
-
+    streamlit_utils.titulo_personalizado("Resumo", text_align="left" ,color="#0081BE", size='h1') 
 
     streamlit_utils.titulo_personalizado("NOTEBOOK JUPYTER", text_align="left" ,color="#0081BE", size='h2')        
     with st.expander('Exibir Notebook'):

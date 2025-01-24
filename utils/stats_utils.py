@@ -20,7 +20,7 @@ def retorna_limites_outliers(coluna: pd.Series):
     return lower_bound, upper_bound, q1, q2, q3, q4
 
 def exibe_analise_q3_outliers(df: pd.DataFrame, coluna: pd.Series):
-    
+
     lower_bound, upper_bound, q1, q2, q3, q4 = retorna_limites_outliers(coluna)
     st.write('**Dados no terceiro quartil (Q3)**')
     st.write(f'O ponto de corte do terceiro quartil é {q3}')
@@ -39,5 +39,10 @@ def exibe_analise_q3_outliers(df: pd.DataFrame, coluna: pd.Series):
              - O ponto de corte do valor máximo da coluna :orange[{coluna.name}] considerado outlier  é {upper_bound}
              - Há {qtd_outliers} registros considerados outliers :orange[{coluna.name}].
              ''')
+
+
+def exibe_analise_dados_categoricos(df: pd.DataFrame, coluna: pd.Series):
+    st.write(f':blue-background[{coluna.name}]')
+
 
 
