@@ -28,6 +28,7 @@ def layout_custom():
         st.page_link("pages/page_1.py", label = "Data Understanding",icon="📊")
         st.page_link("pages/page_2.py", label = "Data Preparation", icon="🧹")
         st.page_link("pages/page_3.py", label = "Modeling", icon = "🤖")
+        st.page_link("pages/page_4.py", label = "Deploy - Produto", icon = "🚀")
       
     with open("assets/style.css") as css:
         st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)

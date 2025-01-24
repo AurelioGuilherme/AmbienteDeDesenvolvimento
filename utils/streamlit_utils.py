@@ -2,6 +2,8 @@ import streamlit as st
 from nbconvert import HTMLExporter
 import nbformat
 import codecs
+import os
+import pandas as pd
 
 
 def load_notebook(path_notebook):
@@ -21,4 +23,13 @@ def load_notebook(path_notebook):
          
 def titulo_personalizado(texto_de_titulo, size='h1', color=None, text_align="center"):
     style = f"text-align: {text_align};{f' color: {color};' if color else ''}"
-    st.markdown(f"""<{size} style="{style}">{texto_de_titulo}</{size}>""", unsafe_allow_html=True)  
+    st.markdown(f"""<{size} style="{style}">{texto_de_titulo}</{size}>""", unsafe_allow_html=True)
+
+
+def carrega_dados_cache():
+    DATA_DIR = "./Data"
+    POLLUTION_DATASET_FILE_NAME = "teste_indicium_precificacao.csv"
+    file_path = os.path.join(DATA_DIR, POLLUTION_DATASET_FILE_NAME)
+    df = pd.read_csv(file_path)
+    st.session_state["data"] = df
+    return df  
