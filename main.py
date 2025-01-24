@@ -24,8 +24,7 @@ if selected =="Descrição do Projeto":
              
              O desafio simula minha alocação em um time de ciência de dados, 
              trabalhando com um cliente no desenvolvimento de uma estratégia de 
-             precificação para uma plataforma de aluguéis temporários na cidade de Nova York.
-             
+             precificação para uma plataforma de aluguéis temporários na cidade de Nova York.         
              """)
     streamlit_utils.titulo_personalizado("Sobre Nova York", size="h3", text_align='left', color="#0081BE")
     left_colum, righ_column = st.columns(2)
