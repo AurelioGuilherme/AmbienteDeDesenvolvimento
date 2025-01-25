@@ -300,22 +300,24 @@ if selected =="Análise Descritiva":
     with col_1:
 
         st.write(':blue-background[host_id]')
-        host_counts = df['host_id'].value_counts().reset_index()
-        host_counts['host_id'] = host_counts['host_id'].astype('category')
-        host_counts.columns = ['host_id', 'num_anuncios']
-        host_counts = host_counts.head(10)
-        st.write('Top 10 Hosts com Mais Anúncios')
-        st.write(host_counts)
+        st.write(f'O conjunto de dados possui um total de {df["host_id"].nunique()} host distintos.')
 
-        st.write('quantos hosts diferentes possuem')
-        st.write('média de casas')
+        host_counts = pd.DataFrame(df.groupby('host_id')['id'].count())\
+                                     .rename({'id': 'Quantidade de anuncios'}, axis=1)\
+                                     .sort_values('Quantidade de anuncios', ascending=False)
+        st.write('Top 5 Hosts com Mais Anúncios')
+        st.write(host_counts.head(5))
+
  
 
     with col_2:
         st.write(':blue-background[bairro_group]')
         
-        st.write('quantos bairro_group diferentes possuem')
-        st.write('quais bairro_group tem mais')
+        st.write(f'''
+                 O conjunto de dados possui um total de {df["bairro_group"].nunique()} grupos de bairros.
+                 ''')
+        st.write(pd.DataFrame(df.groupby('bairro_group')['id'].count())\
+                                .rename({'id': 'Quantidade de anuncios'}, axis=1))
 
 
 
@@ -324,26 +326,158 @@ if selected =="Análise Descritiva":
     with col_3:
         st.write(':blue-background[bairro]')
 
-        st.write('quantos bairro diferentes possuem')
-        st.write('quais bairro tem mais')
+        st.write(f'O conjunto de dados possui um total de {df["bairro"].nunique()} grupos de bairros.')
+
+        bairro_counts = pd.DataFrame(df.groupby('bairro')['id'].count())\
+                                       .rename({'id': 'Quantidade de anuncios'}, axis=1)\
+                                       .sort_values('Quantidade de anuncios', ascending=False)
+        st.write('Top 5 Bairros com Mais Anúncios')
+        st.write(bairro_counts.head(5))
    
     with col_4:
         st.write(':blue-background[room_type]')
 
-        st.write('quantos room_type diferentes possuem')    
-        st.write('quais room_type tem mais')
-
-
-
-
-
-
-
-
+        st.write(f'O conjunto de dados possui um total de {df["room_type"].nunique()} tipos de espaço distintos.')
+        room_type_counts = pd.DataFrame(df.groupby('room_type')['id'].count())\
+                                          .rename({'id': 'Quantidade de anuncios'}, axis=1)\
+                                          .sort_values('Quantidade de anuncios', ascending=False)  
+        st.write(room_type_counts)
 
 
     st.divider()
     streamlit_utils.titulo_personalizado("Exploração Multivariada", text_align="left" ,color="#0081BE", size='h2')
+    streamlit_utils.titulo_personalizado("Correlação", text_align="left" ,color="#0081BE", size='h3')
+    st.write('''
+                Para analisar a correlação entre as variáveis selecionei as seguintes features:
+                - :orange[price]
+                - :orange[minimo_noites]
+                - :orange[numero_de_reviews]
+                - :orange[reviews_por_mes]
+                - :orange[calculado_host_listings_count]
+                - :orange[disponibilidade_365]
+
+                As demais variáveis não foram consideradas devido à sua natureza categórica, descritiva, geoespacial 
+                (como latitude e longitude) ou temporal. Dessa forma, a utilização da correlação de Pearson 
+                não seria adequada para essas características.
+            ''')
+    correlacao_features = ['price', 
+                           'minimo_noites', 
+                           'numero_de_reviews', 
+                           'reviews_por_mes', 
+                           'calculado_host_listings_count', 
+                           'disponibilidade_365']
+    
+    correlation_matrix = df[correlacao_features].corr()
+    fig = px.imshow(correlation_matrix,  text_auto=True, aspect="auto")
+    fig.update_layout(title=dict(text="Matriz de Correlação", x=0.4),
+                      width=750, 
+                      height=500) 
+    st.plotly_chart(fig)
+
+    st.write('''
+             As únicas váriaveis que apresentam correlação ao menos moderada são: 
+             :orange[reviews_por_mes] :orange[numero_de_reviews], as demais apresentam correlção fraca.
+             ''')
+    
+    streamlit_utils.titulo_personalizado("Analisando a relação de preço com os bairros", text_align="left" ,color="#0081BE", size='h3')
+    with st.expander('Exibir Análise'):
+        streamlit_utils.titulo_personalizado("price X bairro_group", text_align="left" ,color="#F7A600", size='h3')
+        st.write('''
+                    Fazedo um agrupamento por preço por grupo de bairros, considerando somente os 
+                 alugueis com valor diferentes de 0 é possivel concluir que:
+
+                 - Manhattan pode ser considerado o melhor conjunto de bairros, 
+                 pois é o mais popular e com maior média de preço.
+                 - Bronx é o bairro menos rentavel.
+                 - State Island é o bairro menos popular.
+                ''')
+        st.dataframe(df.query('price != 0')\
+                       .groupby('bairro_group')['price']\
+                       .agg(['mean', 'count','sum','min','max'])\
+                       .style.highlight_max(subset=['mean', 'count','sum'], color='#59deba')\
+                       .highlight_min(subset=['mean', 'count','sum'], color='#de5959'))
+
+        st.write('**Código do agrupamento.**')        
+        st.code('''
+                    df.query('price != 0')\\
+                      .groupby('bairro_group')['price']\\
+                      .agg(['mean', 'count','sum','min','max'])\\
+                      .style.highlight_max(subset=['mean', 'count','sum'], color='#59deba')\\
+                      .highlight_min(subset=['mean', 'count','sum'], color='#de5959')
+                    ''')
+        st.divider()    
+        streamlit_utils.titulo_personalizado("price x bairro", text_align="left" ,color="#F7A600", size='h3')
+        manhattan_col, brooklyn_col,  = st.columns(2)
+        Queens_col, statenisland_col = st.columns(2)
+        bronx_col, code = st.columns(2)
+
+        with manhattan_col:
+            st.write(':orange[**Manhattan**]')
+            st.dataframe(df.query('price != 0 & bairro_group == "Manhattan"')\
+                           .groupby('bairro')['price']\
+                           .agg(['mean', 'count','min','max','sum'])\
+                           .style.highlight_max(subset=['mean', 'count','sum'], color='#59deba')\
+                           .highlight_min(subset=['mean', 'count','sum'], color='#de5959'))
+        with brooklyn_col:
+            st.write(':orange[**Brooklyn**]')
+
+            st.dataframe(df.query('price != 0 & bairro_group == "Brooklyn"')\
+                           .groupby('bairro')['price']\
+                           .agg(['mean', 'count','min','max','sum'])\
+                           .style.highlight_max(subset=['mean', 'count','sum'], color='#59deba')\
+                           .highlight_min(subset=['mean', 'count','sum'], color='#de5959'))
+        with Queens_col:
+            st.write(':orange[**Queens**]')
+            st.dataframe(df.query('price != 0 & bairro_group == "Queens"')\
+                           .groupby('bairro')['price']\
+                           .agg(['mean', 'count','min','max','sum'])\
+                           .style.highlight_max(subset=['mean', 'count','sum'], color='#59deba')\
+                           .highlight_min(subset=['mean', 'count','sum'], color='#de5959'))
+        with statenisland_col:
+            st.write(':orange[**Staten Island**]')
+            st.dataframe(df.query('price != 0 & bairro_group == "Staten Island"')\
+                           .groupby('bairro')['price']\
+                           .agg(['mean', 'count','min','max','sum'])\
+                           .style.highlight_max(subset=['mean', 'count','sum'], color='#59deba')\
+                           .highlight_min(subset=['mean', 'count','sum'], color='#de5959'))
+
+
+        with bronx_col:
+            st.write(':orange[**Bronx**]')
+            st.dataframe(df.query('price != 0 & bairro_group == "Bronx"')\
+                    .groupby('bairro')['price']\
+                    .agg(['mean', 'count','min','max','sum'])\
+                    .style.highlight_max(subset=['mean', 'count','sum'], color='#59deba')\
+                    .highlight_min(subset=['mean', 'count','sum'], color='#de5959'))
+            
+        with code:
+            st.write(':orange[**Código do agrupamento**]')
+            st.code('''
+                    df.query('price != 0 & bairro_group == "NOME DO BAIRRO"')\\
+                    .groupby('bairro')['price']\\
+                    .agg(['mean', 'count','min','max','sum'])\\
+                    .style.highlight_max(subset=['mean', 'count','sum'], color='#59deba')\\
+                    .highlight_min(subset=['mean', 'count','sum'], color='#de5959')
+                    ''')
+
+
+            
+    
+    
+
+    
+
+
+
+    streamlit_utils.titulo_personalizado("Dados Geoespaciais", text_align="left" ,color="#0081BE", size='h1')
+    streamlit_utils.titulo_personalizado("Análise Temporal", text_align="left" ,color="#0081BE", size='h1')  
+
+
+
+
+
+if selected =="Análise Inferencial":
+    streamlit_utils.titulo_personalizado("Análise Inferencial", text_align="left" ,color="#0081BE", size='h1') 
 
 if selected =="Resumo":
     streamlit_utils.titulo_personalizado("Resumo", text_align="left" ,color="#0081BE", size='h1') 
