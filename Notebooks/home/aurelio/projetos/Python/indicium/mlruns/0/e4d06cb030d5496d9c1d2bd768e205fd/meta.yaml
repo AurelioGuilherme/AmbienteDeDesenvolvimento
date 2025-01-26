@@ -1,0 +1,15 @@
+artifact_uri: /home/aurelio/projetos/Python/indicium/Notebooks/Models-Notebooks/../home/aurelio/projetos/Python/indicium/mlruns/0/e4d06cb030d5496d9c1d2bd768e205fd/artifacts
+end_time: 1737933949693
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e4d06cb030d5496d9c1d2bd768e205fd
+run_name: delicate-ray-801
+run_uuid: e4d06cb030d5496d9c1d2bd768e205fd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1737933948126
+status: 3
+tags: []
+user_id: aurelio
