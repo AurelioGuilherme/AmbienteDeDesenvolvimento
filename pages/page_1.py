@@ -9,6 +9,7 @@ import plotly.express as px
 
 layout_indicium.layout_custom()
 df = streamlit_utils.carrega_dados_cache()
+df_copia = df.copy()
 streamlit_utils.titulo_personalizado("Data Understanding", color="#0081BE")
 st.divider()
 
@@ -202,60 +203,58 @@ if selected =="Análise Descritiva":
     
     
     streamlit_utils.titulo_personalizado("Exploração Individual das Variáveis ", text_align="left" ,color="#0081BE", size='h3')        
+    opcoes_analise_individual = ('price', 
+                                 'minimo_noites',
+                                 'numero_de_reviews',
+                                 'reviews_por_mes',
+                                 'calculado_host_listings_count',
+                                 'disponibilidade_365'
+                                 )
+
+
+    option = st.selectbox('Opções de Análise', opcoes_analise_individual, key='1')
+    if option == 'price':
+        streamlit_utils.titulo_personalizado("price", text_align="left" ,color="#F7A600", size='h3')
+        with st.expander('Exibir Análise'):
+            st.write('**price menor do que 1**')
+            st.dataframe(df.query('price < 1'))
+            st.write('''
+                     - São imóveis diferentes de acordo com a latitude e longitude.
+                     - Há imóveis que pertencem ao mesmo proprietário neste grupo de dados.
+
+                     :red[**Esses valores serão tratados na etapa de Data Preparation, podendo ser removidos ou preenchidos**]
+
+                     ''')
+            st.divider()
+
+
+            stats_utils.exibe_analise_q3_outliers(df, df.price)
+
+    elif option == 'minimo_noites': 
+        streamlit_utils.titulo_personalizado("minimo_noites", text_align="left" ,color="#F7A600", size='h3')
+        with st.expander('Exibir Análise'):
+            stats_utils.exibe_analise_q3_outliers(df, df.minimo_noites)
+
+    elif option == 'numero_de_reviews':
+        streamlit_utils.titulo_personalizado("numero_de_reviews", text_align="left" ,color="#F7A600", size='h3')
+        with st.expander('Exibir Análise'):
+            stats_utils.exibe_analise_q3_outliers(df,df.numero_de_reviews)
     
+    elif option == 'reviews_por_mes':
+        streamlit_utils.titulo_personalizado("reviews_por_mes", text_align="left" ,color="#F7A600", size='h3')
+
+        with st.expander('Exibir Análise'):
+            stats_utils.exibe_analise_q3_outliers(df, df.reviews_por_mes)
+
+    elif option == 'calculado_host_listings_count':
+        streamlit_utils.titulo_personalizado("calculado_host_listings_count", text_align="left" ,color="#F7A600", size='h3')
+        with st.expander('Exibir Análise'):
+            stats_utils.exibe_analise_q3_outliers(df, df.calculado_host_listings_count)
     
-    st.write('''
-                 :blue-background[**price**]
-            ''')
-    with st.expander('Exibir Análise'):
-        st.write('**price menor do que 1**')
-        st.dataframe(df.query('price < 1'))
-        st.write('''
-                 - São imóveis diferentes de acordo com a latitude e longitude.
-                 - Há imóveis que pertencem ao mesmo proprietário neste grupo de dados.
-
-                 :red[**Esses valores serão tratados na etapa de Data Preparation, podendo ser removidos ou preenchidos**]
-             
-                 ''')
-        st.divider()
-
-
-        stats_utils.exibe_analise_q3_outliers(df, df.price)
-
-
-    st.write('''
-                :blue-background[**minimo_noites**]
-            ''')
-    with st.expander('Exibir Análise'):
-        stats_utils.exibe_analise_q3_outliers(df, df.minimo_noites)
-
-
-    st.write('''
-                :blue-background[**numero_de_reviews**]
-            ''')
-    with st.expander('Exibir Análise'):
-        stats_utils.exibe_analise_q3_outliers(df,df.numero_de_reviews)
-    
-    
-    st.write('''
-                :blue-background[**reviews_por_mes**]
-            ''')
-    with st.expander('Exibir Análise'):
-        stats_utils.exibe_analise_q3_outliers(df, df.reviews_por_mes)
-
-
-    st.write('''
-                :blue-background[**calculado_host_listings_count**]
-            ''')
-    with st.expander('Exibir Análise'):
-        stats_utils.exibe_analise_q3_outliers(df, df.calculado_host_listings_count)
-    
-    
-    st.write('''
-                :blue-background[**disponibilidade_365**]
-            ''')
-    with st.expander('Exibir Análise'):
-        stats_utils.exibe_analise_q3_outliers(df, df.disponibilidade_365)
+    elif option == 'disponibilidade_365':
+        streamlit_utils.titulo_personalizado("disponibilidade_365", text_align="left" ,color="#F7A600", size='h3')
+        with st.expander('Exibir Análise'):
+            stats_utils.exibe_analise_q3_outliers(df, df.disponibilidade_365)
 
     st.write('''
              Os valores de :red[price que são menores que 1] serão removidos ou preenchidos na etapa 
@@ -378,187 +377,206 @@ if selected =="Análise Descritiva":
              As únicas váriaveis que apresentam correlação ao menos moderada são: 
              :orange[reviews_por_mes] :orange[numero_de_reviews], as demais apresentam correlção fraca.
              ''')
-    
-    streamlit_utils.titulo_personalizado("Analisando a relação de preço com os bairros", text_align="left" ,color="#0081BE", size='h3')
-    with st.expander('Exibir Análise'):
-        streamlit_utils.titulo_personalizado("price X bairro_group", text_align="left" ,color="#F7A600", size='h3')
-        st.write('''
-                    Fazedo um agrupamento por preço por grupo de bairros, considerando somente os 
-                 alugueis com valor diferentes de 0 é possivel concluir que:
+    streamlit_utils.titulo_personalizado("Analisando a relação entre variáveis", text_align="left" ,color="#0081BE", size='h2')
+    option_relacao_entre_variaveis = ('Relação de preço com os bairros',
+                                      'Relação de preço com o tipo de espaço',
+                                      'Relação de preço com o mínimo de noites de forma agrupada',
+                                      'Relação de preço com o numero de reviews de forma agrupada',
+                                      'Relação de preço com o a quantidade de imoveis por host de forma agrupada',
+                                      'Relação de preço com o a variável disponibilidade_365 de forma agrupada'                                      
+                                      )
+                                   
 
-                 - Manhattan pode ser considerado o melhor conjunto de bairros, 
-                 pois é o mais popular e com maior média de preço.
-                 - Bronx é o bairro menos rentavel.
-                 - State Island é o bairro menos popular.
-                ''')
-        
-        st.write('''
-                Criei uma função chamada :green[agrupamento_estilizado] que está 
-                disponível em :green[utils.stats_utils.py] para auxiliar 
-                na replicação desses agrupamentos.
-                ''')    
-        stats_utils.agrupamento_estilizado(df=df, 
-                                           query='price != 0', 
-                                           agrupamento='bairro_group', 
-                                           coluna_valor='price',
-                                           porcentagem_do_total=True)
-
-
-        st.divider()    
-        streamlit_utils.titulo_personalizado("price x bairro", text_align="left" ,color="#F7A600", size='h3')
-        manhattan_col, brooklyn_col,  = st.columns(2)
-        Queens_col, statenisland_col = st.columns(2)
-        bronx_col, analise_bairros = st.columns(2)
-
-        with manhattan_col:
-            st.write(':orange[**Manhattan**]')
-
-            stats_utils.agrupamento_estilizado(df=df, 
-                                              query='price != 0 & bairro_group == "Manhattan"', 
-                                              agrupamento='bairro', 
-                                              coluna_valor='price',
-                                              porcentagem_do_total=True)
-        with brooklyn_col:
-            st.write(':orange[**Brooklyn**]')
-            stats_utils.agrupamento_estilizado(df=df, 
-                                              query='price != 0 & bairro_group == "Brooklyn"', 
-                                              agrupamento='bairro', 
-                                              coluna_valor='price',
-                                              porcentagem_do_total=True)
-
-
-        with Queens_col:
-            st.write(':orange[**Queens**]')
-            stats_utils.agrupamento_estilizado(df=df, 
-                                              query='price != 0 & bairro_group == "Queens"', 
-                                              agrupamento='bairro', 
-                                              coluna_valor='price',
-                                              porcentagem_do_total=True)
-
-        with statenisland_col:
-            st.write(':orange[**Staten Island**]')
-            stats_utils.agrupamento_estilizado(df=df, 
-                                              query='price != 0 & bairro_group == "Staten Island"', 
-                                              agrupamento='bairro', 
-                                              coluna_valor='price',
-                                              porcentagem_do_total=True)
-
-
-        with bronx_col:
-            st.write(':orange[**Bronx**]')
-            stats_utils.agrupamento_estilizado(df=df, 
-                                              query='price != 0 & bairro_group == "Bronx"', 
-                                              agrupamento='bairro', 
-                                              coluna_valor='price',
-                                              porcentagem_do_total=True)
-            
-        with analise_bairros:
-            streamlit_utils.titulo_personalizado("Conclusão", text_align="left" ,color="#F7A600", size='h3')
+    option_2 = st.selectbox('Opções de Análise: ', option_relacao_entre_variaveis, key=2)
+    if option_2 == 'Relação de preço com os bairros':
+        streamlit_utils.titulo_personalizado("Relação de preço com os bairros", text_align="left" ,color="#0081BE", size='h3')
+        with st.expander('Exibir Análise'):
+            streamlit_utils.titulo_personalizado("price X bairro_group", text_align="left" ,color="#F7A600", size='h3')
             st.write('''
-                     Após fazer uma análise interativa em cada coluna considerando o preço, é possivel inferir
-                     as seguintes suposições:
+                        Fazedo um agrupamento por preço por grupo de bairros, considerando somente os 
+                     alugueis com valor diferentes de 0 é possivel concluir que:
 
-                     - O bairro Fort Wadsworth em Staten Island é o que tem maior média de preços, US\$ 800.00, 
-                     porem conta somente com um anúncio no conjunto de dados.
-                     - O bairro mais popular fica no Brooklyn, Williamsburg com 3919 anúncios e um total 
-                     acumulado de US\$ 563.707.
-                     ''')
+                     - Manhattan pode ser considerado o melhor conjunto de bairros, 
+                     pois é o mais popular e com maior média de preço.
+                     - Bronx é o bairro menos rentavel.
+                     - State Island é o bairro menos popular.
+                    ''')
+
+            st.write('''
+                    Criei uma função chamada :green[agrupamento_estilizado] que está 
+                    disponível em :green[utils.stats_utils.py] para auxiliar 
+                    na replicação desses agrupamentos.
+                    ''')    
+            stats_utils.agrupamento_estilizado(df=df, 
+                                               query='price != 0', 
+                                               agrupamento='bairro_group', 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
+
+
+            st.divider()    
+            streamlit_utils.titulo_personalizado("price x bairro", text_align="left" ,color="#F7A600", size='h3')
+            manhattan_col, brooklyn_col,  = st.columns(2)
+            Queens_col, statenisland_col = st.columns(2)
+            bronx_col, analise_bairros = st.columns(2)
+
+            with manhattan_col:
+                st.write(':orange[**Manhattan**]')
+
+                stats_utils.agrupamento_estilizado(df=df, 
+                                                  query='price != 0 & bairro_group == "Manhattan"', 
+                                                  agrupamento='bairro', 
+                                                  coluna_valor='price',
+                                                  porcentagem_do_total=True)
+            with brooklyn_col:
+                st.write(':orange[**Brooklyn**]')
+                stats_utils.agrupamento_estilizado(df=df, 
+                                                  query='price != 0 & bairro_group == "Brooklyn"', 
+                                                  agrupamento='bairro', 
+                                                  coluna_valor='price',
+                                                  porcentagem_do_total=True)
+
+
+            with Queens_col:
+                st.write(':orange[**Queens**]')
+                stats_utils.agrupamento_estilizado(df=df, 
+                                                  query='price != 0 & bairro_group == "Queens"', 
+                                                  agrupamento='bairro', 
+                                                  coluna_valor='price',
+                                                  porcentagem_do_total=True)
+
+            with statenisland_col:
+                st.write(':orange[**Staten Island**]')
+                stats_utils.agrupamento_estilizado(df=df, 
+                                                  query='price != 0 & bairro_group == "Staten Island"', 
+                                                  agrupamento='bairro', 
+                                                  coluna_valor='price',
+                                                  porcentagem_do_total=True)
+
+
+            with bronx_col:
+                st.write(':orange[**Bronx**]')
+                stats_utils.agrupamento_estilizado(df=df, 
+                                                  query='price != 0 & bairro_group == "Bronx"', 
+                                                  agrupamento='bairro', 
+                                                  coluna_valor='price',
+                                                  porcentagem_do_total=True)
+
+            with analise_bairros:
+                streamlit_utils.titulo_personalizado("Conclusão", text_align="left" ,color="#F7A600", size='h3')
+                st.write('''
+                         Após fazer uma análise interativa em cada coluna considerando o preço, é possivel inferir
+                         as seguintes suposições:
+
+                         - O bairro Fort Wadsworth em Staten Island é o que tem maior média de preços, US\$ 800.00, 
+                         porem conta somente com um anúncio no conjunto de dados.
+                         - O bairro mais popular fica no Brooklyn, Williamsburg com 3919 anúncios e um total 
+                         acumulado de US\$ 563.707.
+                         ''')
 
     
         
+    elif option_2 == 'Relação de preço com o tipo de espaço':         
+        streamlit_utils.titulo_personalizado("Relação de preço com o tipo de espaço", text_align="left" ,color="#0081BE", size='h3')
+        with st.expander('Exibir análise'):
+            streamlit_utils.titulo_personalizado("price x room_type", text_align="left" ,color="#F7A600", size='h3')
+            stats_utils.agrupamento_estilizado(df=df, 
+                                               query='price != 0', 
+                                               agrupamento='room_type', 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
+    
+    elif option_2 == 'Relação de preço com o mínimo de noites de forma agrupada':
+        streamlit_utils.titulo_personalizado("Relação de preço com o mínimo de noites de forma agrupada", text_align="left" ,color="#0081BE", size='h3')
+        with st.expander('Exibir análise'):
+            streamlit_utils.titulo_personalizado("price x minimo_noites", text_align="left" ,color="#F7A600", size='h3')
+            st.write('''
+                        Como a feature minimo_noites possui 109 valores únicos, para reduzir a cardinalidade e facilitar a análise.
+                     - Até 1 Semana
+                     - Entre 1 e 2 Semanas
+                     - Entre 2 Semanas e 1 Mês
+                     - Mais de 1 Mês
+                     ''')
             
-    streamlit_utils.titulo_personalizado("Analisando a relação de preço com o tipo de espaço", text_align="left" ,color="#0081BE", size='h3')
-    with st.expander('Exibir análise'):
-        streamlit_utils.titulo_personalizado("price x room_type", text_align="left" ,color="#F7A600", size='h3')
-        stats_utils.agrupamento_estilizado(df=df, 
-                                           query='price != 0', 
-                                           agrupamento='room_type', 
-                                           coluna_valor='price',
-                                           porcentagem_do_total=True)
-  
 
-    streamlit_utils.titulo_personalizado("Analisando a relação de preço com o mínimo de noites agrupadas", text_align="left" ,color="#0081BE", size='h3')
-    with st.expander('Exibir análise'):
-        streamlit_utils.titulo_personalizado("price x minimo_noites", text_align="left" ,color="#F7A600", size='h3')
-        st.write('''
-                    Como a feature minimo_noites possui 109 valores únicos, para reduzir a cardinalidade e facilitar a análise.
-                 - Até 1 Semana
-                 - Entre 1 e 2 Semanas
-                 - Entre 2 Semanas e 1 Mês
-                 - Mais de 1 Mês
-                 ''')
-        df_copia = df.copy()
+            df_copia['minimo_noites_grupo'] = pd.cut(df_copia['minimo_noites'],
+                                                     bins=[0, 7, 14, 30, float('inf')],
+                                                     labels=['Ate 1 Semana', 
+                                                             'Entre 1 e 2 Semanas', 
+                                                             'Entre 2 Semanas e 1 Mes', 
+                                                             'Mais de 1 Mes']).astype('object')
 
-        df_copia['minimo_noites_grupo'] = pd.cut(df_copia['minimo_noites'],
-                                                 bins=[0, 7, 14, 30, float('inf')],
-                                                 labels=['Ate 1 Semana', 
-                                                         'Entre 1 e 2 Semanas', 
-                                                         'Entre 2 Semanas e 1 Mes', 
-                                                         'Mais de 1 Mes']).astype('object')
-        
 
-        stats_utils.agrupamento_estilizado(df=df_copia, 
-                                           query='price != 0', 
-                                           agrupamento=['minimo_noites_grupo'], 
-                                           coluna_valor='price',
-                                           porcentagem_do_total=True)
+            stats_utils.agrupamento_estilizado(df=df_copia, 
+                                               query='price != 0', 
+                                               agrupamento=['minimo_noites_grupo'], 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
         
 
       
+    elif option_2 == 'Relação de preço com o numero de reviews de forma agrupada':
+        streamlit_utils.titulo_personalizado("Relação de preço com o numero de reviews de forma agrupada", text_align="left" ,color="#0081BE", size='h3')
+        with st.expander('Exibir análise'):
+            streamlit_utils.titulo_personalizado("price x numero_de_reviews", text_align="left" ,color="#F7A600", size='h3')
+            df_copia['numero_de_reviews_grupo'] = pd.cut(df_copia['numero_de_reviews'],
+                                                     bins=[0, 100, 200, 300,float('inf')],
+                                                     labels=['Poucos Reviews', 
+                                                             'Quantidade Moderada de Reviews', 
+                                                             'Alta Quantidade de Reviews', 
+                                                             'Quantidade Muito Alta de Reviews']).astype('object')
 
-    streamlit_utils.titulo_personalizado("Analisando a relação de preço com o numero_de_reviews agrupadas", text_align="left" ,color="#0081BE", size='h3')
-    with st.expander('Exibir análise'):
-        streamlit_utils.titulo_personalizado("price x numero_de_reviews", text_align="left" ,color="#F7A600", size='h3')
-        df_copia['numero_de_reviews_grupo'] = pd.cut(df_copia['numero_de_reviews'],
-                                                 bins=[0, 100, 200, 300,float('inf')],
-                                                 labels=['Poucos Reviews', 
-                                                         'Quantidade Moderada de Reviews', 
-                                                         'Alta Quantidade de Reviews', 
-                                                         'Quantidade Muito Alta de Reviews']).astype('object')
+            stats_utils.agrupamento_estilizado(df=df_copia, 
+                                               query='price != 0', 
+                                               agrupamento=['numero_de_reviews_grupo'], 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
         
-        stats_utils.agrupamento_estilizado(df=df_copia, 
-                                           query='price != 0', 
-                                           agrupamento=['numero_de_reviews_grupo'], 
-                                           coluna_valor='price',
-                                           porcentagem_do_total=True)
-        
         
 
+    elif option_2 == 'Relação de preço com o a quantidade de imoveis por host de forma agrupada':
 
+        streamlit_utils.titulo_personalizado("Relação de preço com o a quantidade de imoveis por host de forma agrupada", text_align="left" ,color="#0081BE", size='h3')
+        with st.expander('Exibir análise'):
+        
+           streamlit_utils.titulo_personalizado("price x calculado_host_listings_count", text_align="left" ,color="#F7A600", size='h3')
+           df_copia['calculado_host_listings_count_group'] = pd.cut(df_copia['calculado_host_listings_count'],
+                                                                    bins=[0, 1, 5, 10, 50,float('inf')],
+                                                                    labels=['Somente 1', 
+                                                                            'Entre 1 e 5', 
+                                                                            'De 5 a 10', 
+                                                                            'De 10 a 50',
+                                                                            'Mais de 50']).astype('object')
 
-    streamlit_utils.titulo_personalizado("Analisando a relação de preço com o calculado_host_listings_count agrupadas", text_align="left" ,color="#0081BE", size='h3')
-    with st.expander('Exibir análise'):
+           stats_utils.agrupamento_estilizado(df=df_copia, 
+                                               query='price != 0', 
+                                               agrupamento=['calculado_host_listings_count_group'], 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
+           
+    elif option_2 == 'Relação de preço com o a variável disponibilidade_365 de forma agrupada':
+        streamlit_utils.titulo_personalizado("Relação de preço com o a variável disponibilidade_365 de forma agrupada", text_align="left" ,color="#0081BE", size='h3')
+        with st.expander('Exibir análise'):
+           streamlit_utils.titulo_personalizado("price x calculado_host_listings_count", text_align="left" ,color="#F7A600", size='h3')
+           df_copia['disponibilidade_365_group'] = pd.cut(df_copia['disponibilidade_365'],
+                                                                    bins=[0, 7, 14, 30,float('inf')],
+                                                                    labels=['Ate 1 Semana', 
+                                                                            'Entre 1 e 2 Semanas', 
+                                                                            'Entre 2 Semanas e 1 Mes', 
+                                                                            'Mais de 1 Mes']).astype('object')
+
+           stats_utils.agrupamento_estilizado(df=df_copia, 
+                                               query='price != 0', 
+                                               agrupamento=['disponibilidade_365_group'], 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
        
-       streamlit_utils.titulo_personalizado("price x calculado_host_listings_count", text_align="left" ,color="#F7A600", size='h3')
-       df_copia['calculado_host_listings_count_group'] = pd.cut(df_copia['calculado_host_listings_count'],
-                                                                bins=[0, 1, 5, 10, 50,float('inf')],
-                                                                labels=['Somente 1', 
-                                                                        'Entre 1 e 5', 
-                                                                        'De 5 a 10', 
-                                                                        'De 10 a 50',
-                                                                        'Mais de 50']).astype('object')
-        
-       stats_utils.agrupamento_estilizado(df=df_copia, 
-                                           query='price != 0', 
-                                           agrupamento=['calculado_host_listings_count_group'], 
-                                           coluna_valor='price',
-                                           porcentagem_do_total=True)
-       
-    streamlit_utils.titulo_personalizado("Analisando a relação de preço com o disponibilidade_365 agrupadas", text_align="left" ,color="#0081BE", size='h3')
-    with st.expander('Exibir análise'):
-       streamlit_utils.titulo_personalizado("price x calculado_host_listings_count", text_align="left" ,color="#F7A600", size='h3')
-       df_copia['disponibilidade_365_group'] = pd.cut(df_copia['disponibilidade_365'],
-                                                                bins=[0, 7, 14, 30,float('inf')],
-                                                                labels=['Ate 1 Semana', 
-                                                                        'Entre 1 e 2 Semanas', 
-                                                                        'Entre 2 Semanas e 1 Mes', 
-                                                                        'Mais de 1 Mes']).astype('object')
-        
-       stats_utils.agrupamento_estilizado(df=df_copia, 
-                                           query='price != 0', 
-                                           agrupamento=['disponibilidade_365_group'], 
-                                           coluna_valor='price',
-                                           porcentagem_do_total=True)
+   # option = st.selectbox('Opções de Análise', ('Analise 1', 'Analise 2'), key='1')
+   # if option == 'Analise 1':
+   #     st.write('opa')
+   # if option == 'Analise 2':
+   #     st.write('aqui')
+   # opcao_2 = st.selectbox('Opções de Análise 2', ('Analise 1', 'Analise 2'), key='2')
 
    #
    # streamlit_utils.titulo_personalizado("Dados Geoespaciais", text_align="left" ,color="#0081BE", size='h1')
