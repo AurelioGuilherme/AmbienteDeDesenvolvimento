@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
+from typing import Union
 
 
 def retorna_quartis(coluna: pd.Series):
@@ -43,6 +44,28 @@ def exibe_analise_q3_outliers(df: pd.DataFrame, coluna: pd.Series):
 
 def exibe_analise_dados_categoricos(df: pd.DataFrame, coluna: pd.Series):
     st.write(f':blue-background[{coluna.name}]')
+
+def agrupamento_estilizado(
+        df: pd.DataFrame, 
+        query: str, 
+        agrupamento: Union[str, list[str]], 
+        coluna_valor: str, 
+        agg: list=['count', 'mean', 'sum', 'min', 'max'], 
+        subset: list=['mean', 'count','sum'],
+        porcentagem_do_total: bool=False):
+    
+    df_agrupado = df.query(query)\
+                    .groupby(agrupamento)[coluna_valor]\
+                    .agg(agg)
+    
+    if porcentagem_do_total:
+        df_agrupado['% do total'] = (df_agrupado['count'] / df_agrupado["count"].sum()) * 100
+        df_agrupado['% do total'] = df_agrupado['% do total'].apply(lambda x: f"{x:.2f}")
+        df_agrupado = df_agrupado[['count', '% do total', 'mean', 'sum', 'min', 'max']]
+
+    st.dataframe(df_agrupado.style.highlight_max(subset=subset, color='#59deba')\
+                                  .highlight_min(subset=subset, color='#de5959'))
+
 
 
 
