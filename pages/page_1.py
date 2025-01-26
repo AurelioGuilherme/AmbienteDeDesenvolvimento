@@ -10,6 +10,8 @@ import plotly.express as px
 layout_indicium.layout_custom()
 df = streamlit_utils.carrega_dados_cache()
 df_copia = df.copy()
+
+
 streamlit_utils.titulo_personalizado("Data Understanding", color="#0081BE")
 st.divider()
 
@@ -571,19 +573,60 @@ if selected =="Análise Descritiva":
                                                coluna_valor='price',
                                                porcentagem_do_total=True)
        
-  
+ 
+
+
     streamlit_utils.titulo_personalizado("Dados Geoespaciais", text_align="left" ,color="#0081BE", size='h1')
     exibir_filtros = st.checkbox('Exibir filtros', value=False)
     if exibir_filtros:
-        bairro_group_filter = st.selectbox('Bairro:', df['bairro_group'].unique())
-        room_type_filter = st.selectbox('Tipo de espaço:', df['room_type'].unique())
-        dados_filtrados = df[(df['bairro_group'] == bairro_group_filter) & (df['room_type'] == room_type_filter)]
+        col_filtro_price, col_filtro_localizacao,kpi_cols = st.columns(3)
+
+        with col_filtro_localizacao:
+            bairro_grupo_filtror = st.selectbox('Bairro:', ["Todos"] + list(df['bairro_group'].unique()))
+            room_type_filter = st.selectbox('Tipo de espaço:', ["Todos"] + list(df['room_type'].unique()))
+
+        with col_filtro_price:
+            min_price = st.slider('Preço mínimo:', 
+                                  min_value=int(df['price'].min()),
+                                  max_value=int(df['price'].max()),
+                                  value=int(df['price'].min()))
+
+            max_price = st.slider('Preço máximo:',
+                                  min_value=min_price,
+                                  max_value=int(df['price'].max()),
+                                  value=int(df['price'].max()))
+        if bairro_grupo_filtror == 'Todos' and room_type_filter == 'Todos':
+              dados_filtrados = df[(df['price'] >= min_price) & (df['price'] <= max_price)]
+
+        elif bairro_grupo_filtror == 'Todos'and room_type_filter != 'Todos':
+              dados_filtrados = df[(df['room_type'] == room_type_filter) &
+                                   (df['price'] >= min_price) & 
+                                   (df['price'] <= max_price)]
+
+        elif bairro_grupo_filtror != 'Todos' and room_type_filter == 'Todos':
+             dados_filtrados = df[(df['bairro_group'] == bairro_grupo_filtror) &                                
+                                  (df['price'] >= min_price) & 
+                                  (df['price'] <= max_price)]
+
+        elif bairro_grupo_filtror != 'Todos' and room_type_filter != 'Todos':
+            dados_filtrados = df[(df['bairro_group'] == bairro_grupo_filtror) & 
+                                 (df['room_type'] == room_type_filter) &
+                                 (df['price'] >= min_price) & 
+                                 (df['price'] <= max_price)]
+        else:
+            dados_filtrados = df
+        with kpi_cols:
+            st.metric('Quantidade de Anúncios', value=len(dados_filtrados), border=True)
+            st.metric('Valor Médio dos Anuncios', value=round(dados_filtrados.price.mean(), 2), border=True)
     else:
         dados_filtrados = df
     st.map(dados_filtrados, latitude='latitude', longitude='longitude', color='#01aaff80')
+    
+    
+    
     streamlit_utils.titulo_personalizado("Análise Temporal", text_align="left" ,color="#0081BE", size='h1') 
     st.write(df)
-     
+
 #if selected =="Análise Inferencial":
 #    streamlit_utils.titulo_personalizado("Análise Inferencial", text_align="left" ,color="#0081BE", size='h1') 
 #
