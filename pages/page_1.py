@@ -8,7 +8,10 @@ import plotly.express as px
 
 
 layout_indicium.layout_custom()
-df = streamlit_utils.carrega_dados_cache()
+if "data" in st.session_state:
+    df = st.session_state["data"]
+else:
+    st.warning("Arquivo 'teste_indicum_precificacao.csv' não foi encontrado na pasta /Data")
 df_copia = df.copy()
 
 
@@ -502,11 +505,15 @@ if selected =="Análise Descritiva":
             
 
             df_copia['minimo_noites_grupo'] = pd.cut(df_copia['minimo_noites'],
-                                                     bins=[0, 7, 14, 30, float('inf')],
-                                                     labels=['Ate 1 Semana', 
+                                                     bins=[0, 3, 7, 14, 30, 60, 180, 365 ,float('inf')],
+                                                     labels=['Entre 1 a 3 dias',
+                                                             'Entre 3 a 7 dias', 
                                                              'Entre 1 e 2 Semanas', 
-                                                             'Entre 2 Semanas e 1 Mes', 
-                                                             'Mais de 1 Mes']).astype('object')
+                                                             'Entre 2 Semanas e 1 Mes',   
+                                                             'Mais de 1 Mes',
+                                                             'Mais de 2 Meses',
+                                                             'Mais de 6 Meses',
+                                                             'Mais de 1 Ano']).astype('object')
 
 
             stats_utils.agrupamento_estilizado(df=df_copia, 
@@ -559,13 +566,18 @@ if selected =="Análise Descritiva":
     elif option_2 == 'Relação de preço com o a variável disponibilidade_365 de forma agrupada':
         streamlit_utils.titulo_personalizado("Relação de preço com o a variável disponibilidade_365 de forma agrupada", text_align="left" ,color="#0081BE", size='h3')
         with st.expander('Exibir análise'):
-           streamlit_utils.titulo_personalizado("price x calculado_host_listings_count", text_align="left" ,color="#F7A600", size='h3')
+           streamlit_utils.titulo_personalizado("price x disponibilidade_365", text_align="left" ,color="#F7A600", size='h3')
            df_copia['disponibilidade_365_group'] = pd.cut(df_copia['disponibilidade_365'],
-                                                                    bins=[0, 7, 14, 30,float('inf')],
-                                                                    labels=['Ate 1 Semana', 
+                                                                    bins=[-1, 0, 3, 7, 14, 30, 60, 180, 364 , float('inf')],
+                                                                    labels=['0 Dias',
+                                                                            'Entre 1 a 3 dias',
+                                                                            'Entre 3 a 7 dias', 
                                                                             'Entre 1 e 2 Semanas', 
-                                                                            'Entre 2 Semanas e 1 Mes', 
-                                                                            'Mais de 1 Mes']).astype('object')
+                                                                            'Entre 2 Semanas e 1 Mes',   
+                                                                            'Mais de 1 Mes',
+                                                                            'Mais de 2 Meses',
+                                                                            'Mais de 6 Meses',
+                                                                            '1 Ano']).astype('object')
 
            stats_utils.agrupamento_estilizado(df=df_copia, 
                                                query='price != 0', 
@@ -625,8 +637,11 @@ if selected =="Análise Descritiva":
     
     
     
-    streamlit_utils.titulo_personalizado("Análise Temporal", text_align="left" ,color="#0081BE", size='h1') 
-    st.write(df)
+    streamlit_utils.titulo_personalizado("Análise Temporal", text_align="left" ,color="#0081BE", size='h1')
+    # Plotar um line plot com a quantidade de reviews.
+    # Agrupar por ano_mes 
+    st.write(pd.to_datetime(df['ultima_review']))
+    st.write(df[['numero_de_reviews', 'ultima_review', 'reviews_por_mes']].query('numero_de_reviews == 0').info())
 
 
 
