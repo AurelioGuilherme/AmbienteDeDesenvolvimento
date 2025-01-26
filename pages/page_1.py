@@ -12,7 +12,7 @@ df = streamlit_utils.carrega_dados_cache()
 df_copia = df.copy()
 
 
-streamlit_utils.titulo_personalizado("Data Understanding", color="#0081BE")
+streamlit_utils.titulo_personalizado("Data Understanding", color="#0081BE", anchor="inicio")
 st.divider()
 
 # Menu horizontal
@@ -595,6 +595,7 @@ if selected =="Análise Descritiva":
                                   min_value=min_price,
                                   max_value=int(df['price'].max()),
                                   value=int(df['price'].max()))
+            
         if bairro_grupo_filtror == 'Todos' and room_type_filter == 'Todos':
               dados_filtrados = df[(df['price'] >= min_price) & (df['price'] <= max_price)]
 
@@ -627,6 +628,9 @@ if selected =="Análise Descritiva":
     streamlit_utils.titulo_personalizado("Análise Temporal", text_align="left" ,color="#0081BE", size='h1') 
     st.write(df)
 
+
+
+
 #if selected =="Análise Inferencial":
 #    streamlit_utils.titulo_personalizado("Análise Inferencial", text_align="left" ,color="#0081BE", size='h1') 
 #
@@ -636,3 +640,29 @@ if selected =="Análise Descritiva":
 #    streamlit_utils.titulo_personalizado("NOTEBOOK JUPYTER", text_align="left" ,color="#0081BE", size='h2')        
 #    with st.expander('Exibir Notebook'):
 #        streamlit_utils.load_notebook('./Notebooks/data_understanding.ipynb')
+
+
+
+st.markdown("""
+             <style>
+             .scroll-button {
+                 position: fixed;
+                 bottom: 20px;
+                 right: 20px;
+                 background-color: #0081BE;
+                 color: white;
+                 border: none;
+                 padding: 10px 20px;
+                 border-radius: 5px;
+                 cursor: pointer;
+                 font-size: 16px;
+                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+             }
+             .scroll-button:hover {
+                 background-color: #005f8b;
+             }
+             </style>
+             <a href="#inicio">
+                 <button class="scroll-button">Voltar ao Início.</button>
+             </a>
+            """,unsafe_allow_html=True)

@@ -21,8 +21,10 @@ def load_notebook(path_notebook):
 
 
          
-def titulo_personalizado(texto_de_titulo, size='h1', color=None, text_align="center"):
+def titulo_personalizado(texto_de_titulo, size='h1', color=None, text_align="center", anchor=None):
     style = f"text-align: {text_align};{f' color: {color};' if color else ''}"
+    if anchor:
+        st.markdown(f"""<a id="{anchor}"></a>""", unsafe_allow_html=True)
     st.markdown(f"""<{size} style="{style}">{texto_de_titulo}</{size}>""", unsafe_allow_html=True)
 
 
