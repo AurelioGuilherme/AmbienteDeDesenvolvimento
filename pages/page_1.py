@@ -571,16 +571,19 @@ if selected =="Análise Descritiva":
                                                coluna_valor='price',
                                                porcentagem_do_total=True)
        
-   # option = st.selectbox('Opções de Análise', ('Analise 1', 'Analise 2'), key='1')
-   # if option == 'Analise 1':
-   #     st.write('opa')
-   # if option == 'Analise 2':
-   #     st.write('aqui')
-   # opcao_2 = st.selectbox('Opções de Análise 2', ('Analise 1', 'Analise 2'), key='2')
-
-   #
-   # streamlit_utils.titulo_personalizado("Dados Geoespaciais", text_align="left" ,color="#0081BE", size='h1')
-   # streamlit_utils.titulo_personalizado("Análise Temporal", text_align="left" ,color="#0081BE", size='h1')  
+  
+    streamlit_utils.titulo_personalizado("Dados Geoespaciais", text_align="left" ,color="#0081BE", size='h1')
+    exibir_filtros = st.checkbox('Exibir filtros', value=False)
+    if exibir_filtros:
+        bairro_group_filter = st.selectbox('Bairro:', df['bairro_group'].unique())
+        room_type_filter = st.selectbox('Tipo de espaço:', df['room_type'].unique())
+        dados_filtrados = df[(df['bairro_group'] == bairro_group_filter) & (df['room_type'] == room_type_filter)]
+    else:
+        dados_filtrados = df
+    st.map(dados_filtrados, latitude='latitude', longitude='longitude', color='#01aaff80')
+    streamlit_utils.titulo_personalizado("Análise Temporal", text_align="left" ,color="#0081BE", size='h1') 
+    st.write(df)
+     
 #if selected =="Análise Inferencial":
 #    streamlit_utils.titulo_personalizado("Análise Inferencial", text_align="left" ,color="#0081BE", size='h1') 
 #
