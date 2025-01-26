@@ -1,0 +1,15 @@
+artifact_uri: file:///home/aurelio/projetos/Python/indicium/Notebooks/Models-Notebooks/mlruns/0/069c99d1684e4e60b9198e4b0588b16d/artifacts
+end_time: 1737934410521
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 069c99d1684e4e60b9198e4b0588b16d
+run_name: able-rook-745
+run_uuid: 069c99d1684e4e60b9198e4b0588b16d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1737934408909
+status: 3
+tags: []
+user_id: aurelio
