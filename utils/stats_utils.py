@@ -36,9 +36,10 @@ def exibe_analise_q3_outliers(df: pd.DataFrame, coluna: pd.Series):
 
     qtd_outliers = len(df[df[coluna.name] > upper_bound])
     st.write(f'''
-             - O ponto de corte do valor mínimo da coluna :orange[{coluna.name}] considerado outlier  é {lower_bound}
-             - O ponto de corte do valor máximo da coluna :orange[{coluna.name}] considerado outlier  é {upper_bound}
+             - O ponto de corte do valor mínimo da coluna :orange[{coluna.name}] considerado outlier  é {lower_bound}.
+             - O ponto de corte do valor máximo da coluna :orange[{coluna.name}] considerado outlier  é {upper_bound}.
              - Há {qtd_outliers} registros considerados outliers :orange[{coluna.name}].
+             - Existem {df[coluna.name].nunique()} valores únicos.
              ''')
 
 

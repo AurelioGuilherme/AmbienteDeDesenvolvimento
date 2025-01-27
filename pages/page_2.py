@@ -3,17 +3,13 @@ from utils import tratamento_de_dados
 import streamlit as st
 import pandas as pd
 from sklearn.preprocessing import RobustScaler, OneHotEncoder
-from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 
 
 layout_indicium.layout_custom()
 df = streamlit_utils.carrega_dados_cache()
-if "data" in st.session_state:
-    df = st.session_state["data"]
-else:
-    st.warning("Recarregue a pagina Business Understanding para carregar dados")
+
 
 streamlit_utils.titulo_personalizado("Data Preparation", color="#0081BE",anchor='inicio_data_preparation')
 st.divider()

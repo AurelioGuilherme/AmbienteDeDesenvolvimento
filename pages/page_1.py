@@ -2,16 +2,11 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from utils import streamlit_utils, layout_indicium, stats_utils
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.express as px
 
 
 layout_indicium.layout_custom()
-if "data" in st.session_state:
-    df = st.session_state["data"]
-else:
-    st.warning("Arquivo 'teste_indicum_precificacao.csv' não foi encontrado na pasta /Data")
+df = streamlit_utils.carrega_dados_cache()
 df_copia = df.copy()
 
 
