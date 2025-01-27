@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap'); 
 @import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap');
 
 body * {
     font-family: 'Roboto', sans-serif !important;
@@ -20,6 +21,27 @@ h3 {
     font-size: 26px; 
 }
 
-.st-emotion-cache-6qob1r { /* Classe do conteúdo da barra lateral */
-    background: linear-gradient(to bottom, #0081BE, #333b8f); /* Gradiente do topo para o final */
+.st-emotion-cache-6qob1r { 
+    background: linear-gradient(to bottom, #0081BE, #333b8f); 
+}
+
+.st-emotion-cache-truhtc {
+    background: #ded9d9;
+    font-family: 'Source Code Pro', monospace !important;
+    font-size: 16px !important;
+}
+
+.st-emotion-cache-truhtc * {
+    font-family: 'Source Code Pro', monospace !important;
+}
+
+.st-bb {
+    background-color:#333b8f;
+    color: #ffffff;
+}
+.st-fs {
+    background-color:#333b8f;
+    color: #ffffff;
+
+
 }

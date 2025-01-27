@@ -269,11 +269,12 @@ if selected =="Análise Descritiva":
     st.divider()
     
     
-    streamlit_utils.titulo_personalizado("Exploração Individual das Variáveis ", 
+    streamlit_utils.titulo_personalizado("Exploração Individual das Variáveis Contínuas", 
                                          text_align="left",
                                          color="#0081BE", 
                                          size='h3')       
-     
+    st.write(':orange[**Selecione uma das opções de análise abaixo para visualiza-la.**]') 
+
     opcoes_analise_individual = ('price', 
                                  'minimo_noites',
                                  'numero_de_reviews',
@@ -339,6 +340,74 @@ if selected =="Análise Descritiva":
                                              size='h3')
         with st.expander('Exibir Análise'):
             stats_utils.exibe_analise_q3_outliers(df, df.calculado_host_listings_count)
+
+            streamlit_utils.titulo_personalizado("Será que a contagem host está correta?", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
+            
+            st.write('A resposta para esta pergunta é não.')
+            # Separei as colunas necessárias para essa análise, criei uma lista com os valores únicos 
+            # em "calculado_host_listings_count" e criei um dataframe vazio.
+            df_problema = df_copia[['host_id', 'calculado_host_listings_count']]
+            ids = list(df_problema['calculado_host_listings_count'].unique())
+            df_teste = pd.DataFrame()
+
+            # loop com os valores únicos armazenando o resultado do tamanho do objeto set
+            for i in ids:
+                tamanho_teste = len(set(df_problema.query(f'calculado_host_listings_count == {i}')\
+                                                   .value_counts('host_id')))
+
+                # Compara se o valor é diferente de 1
+                if tamanho_teste != 1:
+                    # Calcula a quantidade de host_ids verdadeira
+                    host_ids_counts_df = pd.DataFrame(df_copia.query(f'calculado_host_listings_count == {i}')\
+                                                              .value_counts('host_id'))\
+                                                              .reset_index()
+
+                    # Filtra somente os valores incosistentes
+                    host_ids_counts = host_ids_counts_df[host_ids_counts_df['count'] != i]
+
+                    # Concatena os valores ao DataFrame. 
+                    df_teste = pd.concat([df_teste, host_ids_counts])
+            # Dados incorretos
+            df_teste = df_teste.rename({'count': 'calculado_host_listings_count'}, axis = 1)
+
+            st.write('Dados corrigidos:')
+            st.dataframe(df_teste)
+
+            st.write('Filtrando dados originais incorretos.')
+            st.dataframe(df.query('host_id == 2787'))
+
+            st.write('''Código para esta análise:''')
+            st.code('''
+            # Separei as colunas necessárias para essa análise, criei uma lista com os valores únicos 
+            # em "calculado_host_listings_count" e criei um dataframe vazio.
+            df_problema = df_copia[['host_id', 'calculado_host_listings_count']]
+            ids = list(df_problema['calculado_host_listings_count'].unique())
+            df_teste = pd.DataFrame()
+
+            # loop com os valores únicos armazenando o resultado do tamanho do objeto set
+            for i in ids:
+                tamanho_teste = len(set(df_problema.query(f'calculado_host_listings_count == {i}')\\
+                                                   .value_counts('host_id')))
+
+                # Compara se o valor é diferente de 1
+                if tamanho_teste != 1:
+                    # Calcula a quantidade de host_ids verdadeira
+                    host_ids_counts_df = pd.DataFrame(df_copia.query(f'calculado_host_listings_count == {i}')\\
+                                                              .value_counts('host_id'))\\
+                                                              .reset_index()
+
+                    # Filtra somente os valores incosistentes
+                    host_ids_counts = host_ids_counts_df[host_ids_counts_df['count'] != i]
+
+                    # Concatena os valores ao DataFrame. 
+                    df_teste = pd.concat([df_teste, host_ids_counts])
+            # Dados incorretos
+            df_teste = df_teste.rename({'count': 'calculado_host_listings_count'}, axis = 1)
+
+                ''')
     
     elif option == 'disponibilidade_365':
         streamlit_utils.titulo_personalizado("disponibilidade_365", 
@@ -364,6 +433,10 @@ if selected =="Análise Descritiva":
              :orange[disponibilidade_365] podem ser classificadas ou transformadas em variáveis categóricas 
              com agrupamentos melhorando a homogeneidade na etapa de Data Preparation.
 
+             A variável :orange[calculado_host_listings_count] possui um erro de atribuição no host_id: 2787, 
+             onde a quantidade de anúncios informada está divergente da presente do conjunto de dados, desta forma 
+             será necessária a atribuição do valor correto.
+
              - :red[**Neste momento:**] Caso seja constatado que a performance do modelo é insulficiente 
              na etapa de evaluation, pode ser considerado algum tratamento de dados adicional nos valores outliers
              para a melhoria do modelo. 
@@ -383,7 +456,7 @@ if selected =="Análise Descritiva":
              - :orange[room_type]
             ''') 
     st.divider() 
-    streamlit_utils.titulo_personalizado("Exploração Individual das Variáveis", 
+    streamlit_utils.titulo_personalizado("Exploração Individual das Variáveis Categóricas", 
                                          text_align="left", 
                                          color="#0081BE", 
                                          size='h3')
@@ -434,6 +507,16 @@ if selected =="Análise Descritiva":
                                           .sort_values('Quantidade de anuncios', ascending=False)  
         st.write(room_type_counts)
 
+        st.write('''
+                    A definição para os tipos:
+                    
+                 - **Entire home/apt**: Apartamento ou casa individual (o hóspede não precisará compartilhar 
+                 os espaços com outros inquilinos ou proprietários).
+                 - **Private room**: Quarto individual (o hospede compartilha espaços como cozinha 
+                 com outros inquilinos ou proprietarios, porem o quarto é individual).
+                 - **Shared room**: Quarto compartilhado.
+                 ''')
+
 
     st.divider()
     streamlit_utils.titulo_personalizado("Exploração Multivariada", 
@@ -476,11 +559,14 @@ if selected =="Análise Descritiva":
              As únicas váriaveis que apresentam correlação ao menos moderada são: 
              :orange[reviews_por_mes] :orange[numero_de_reviews], as demais apresentam correlção fraca.
              ''')
+    st.divider()
+
     streamlit_utils.titulo_personalizado("Analisando a relação entre variáveis", 
                                          text_align="left",
                                          color="#0081BE", 
                                          size='h2')
     
+    st.write(':orange[**Selecione uma das opções de análise abaixo para visualiza-la.**]')
     option_relacao_entre_variaveis = ('Relação de preço com os bairros',
                                       'Relação de preço com o tipo de espaço',
                                       'Relação de preço com o mínimo de noites de forma agrupada',
@@ -577,7 +663,10 @@ if selected =="Análise Descritiva":
                                                   porcentagem_do_total=True)
 
             with analise_bairros:
-                streamlit_utils.titulo_personalizado("Conclusão", text_align="left" ,color="#F7A600", size='h3')
+                streamlit_utils.titulo_personalizado("Conclusão", 
+                                                     text_align="left" ,
+                                                     color="#F7A600", 
+                                                     size='h3')
                 st.write('''
                          Após fazer uma análise interativa em cada coluna considerando o preço, é possivel inferir
                          as seguintes suposições:
@@ -586,6 +675,8 @@ if selected =="Análise Descritiva":
                          porem conta somente com um anúncio no conjunto de dados.
                          - O bairro mais popular fica no Brooklyn, Williamsburg com 3919 anúncios e um total 
                          acumulado de US\$ 563.707.
+                         - Manhattan possui um valor acumulado 70.55% maior que o segundo colocado que é Brooklyn.
+                         - O valor acumulado de Manhattan é maior que a soma de todos os grupos de bairros em 33,15%.
                          ''')
 
     
@@ -607,24 +698,53 @@ if selected =="Análise Descritiva":
                                                agrupamento='room_type', 
                                                coluna_valor='price',
                                                porcentagem_do_total=True)
+            
+            
+            bairro_grupo_filtro = st.selectbox('Bairro:', list(df['bairro_group'].unique()))
+            
+            stats_utils.agrupamento_estilizado(df=df.query('bairro_group == @bairro_grupo_filtro'), 
+                                               query='price != 0', 
+                                               agrupamento='room_type', 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
+            
+            streamlit_utils.titulo_personalizado("Conclusão", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
+            
+            st.write('''
+                        - O tipo de espaço mais rentavel em todos os grupos de bairros é "Entire home/apt".
+                        - Analisando os tipos de espaço considerando o grupo de bairro, o mais popular é "Private Room"
+                        em quase todos os bairros. Porem, em Manhattan, o tipo mais comum é "Entire home/apt", devido 
+                        Manhattan possuir a maioria dos anúncios, torna "Entire home/apt" o mais popular no conjunto de dados.
+                  ''')
     
     elif option_2 == 'Relação de preço com o mínimo de noites de forma agrupada':
         streamlit_utils.titulo_personalizado("Relação de preço com o mínimo de noites de forma agrupada", 
                                              text_align="left",
                                              color="#0081BE", 
                                              size='h3')
+        
+        st.write('''
+                    Como a feature minimo_noites possui 109 valores únicos, para reduzir a cardinalidade e 
+                     facilitar a análise efetuei o agrupamento da seguinte maneira.
+                    
+                     - Entre 1 a 3 dias
+                     - Entre 3 a 7 dias
+                     - Entre 1 e 2 Semanas
+                     - Entre 2 Semanas e 1 Mes 
+                     - Mais de 1 Mes
+                     - Mais de 2 Meses
+                     - Mais de 6 Meses
+                     - Mais de 1 Ano
+                     ''')
         with st.expander('Exibir análise'):
             streamlit_utils.titulo_personalizado("price x minimo_noites", 
                                                  text_align="left",
                                                  color="#F7A600", 
                                                  size='h3')
-            st.write('''
-                        Como a feature minimo_noites possui 109 valores únicos, para reduzir a cardinalidade e facilitar a análise.
-                     - Até 1 Semana
-                     - Entre 1 e 2 Semanas
-                     - Entre 2 Semanas e 1 Mês
-                     - Mais de 1 Mês
-                     ''')
+
             
 
             df_copia['minimo_noites_grupo'] = pd.cut(df_copia['minimo_noites'],
@@ -644,14 +764,43 @@ if selected =="Análise Descritiva":
                                                agrupamento=['minimo_noites_grupo'], 
                                                coluna_valor='price',
                                                porcentagem_do_total=True)
-        
+            
+            bairro_grupo_filtro = st.selectbox('Bairro:', list(df['bairro_group'].unique()))
+            
+            stats_utils.agrupamento_estilizado(df=df_copia.query('bairro_group == @bairro_grupo_filtro'), 
+                                               query='price != 0', 
+                                               agrupamento=['minimo_noites_grupo'], 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
+            
+            streamlit_utils.titulo_personalizado("Conclusão", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
+            st.write('''
+                        - O único grupo de bairro que torna-se mais barato, considerando a média, conforme maior o tempo
+                        de hospedagem é o Bronx. 
+                        - Manhattan é o único grupo de bairro que mantem a média acima de US\$100,00 
+                        independente do periodo.
 
+                    ''')
       
     elif option_2 == 'Relação de preço com o numero de reviews de forma agrupada':
         streamlit_utils.titulo_personalizado("Relação de preço com o numero de reviews de forma agrupada", 
                                              text_align="left",
                                              color="#0081BE", 
                                              size='h3')
+        st.write('''
+                    Como a variável numero_de_reviews possui 394 valores únicos, para reduzir a cardinalidade e 
+                     facilitar a análise efetuei o agrupamento da seguinte maneira:
+                 
+                    - Poucos Reviews (0-99) 
+                    - Quantidade Moderada de Reviews (100-199)
+                    - Alta Quantidade de Reviews (200 - 299)
+                    - Quantidade Muito Alta de Reviews (300+)
+
+
+                ''')
         with st.expander('Exibir análise'):
             streamlit_utils.titulo_personalizado("price x numero_de_reviews", 
                                                  text_align="left",
@@ -660,17 +809,35 @@ if selected =="Análise Descritiva":
             
             df_copia['numero_de_reviews_grupo'] = pd.cut(df_copia['numero_de_reviews'],
                                                      bins=[0, 100, 200, 300,float('inf')],
-                                                     labels=['Poucos Reviews', 
-                                                             'Quantidade Moderada de Reviews', 
-                                                             'Alta Quantidade de Reviews', 
-                                                             'Quantidade Muito Alta de Reviews']).astype('object')
+                                                     labels=['Poucos Reviews (0-99)', 
+                                                             'Quantidade Moderada de Reviews (100-199)', 
+                                                             'Alta Quantidade de Reviews (200 - 299)', 
+                                                             'Quantidade Muito Alta de Reviews (300+)']).astype('object')
 
             stats_utils.agrupamento_estilizado(df=df_copia, 
                                                query='price != 0', 
                                                agrupamento=['numero_de_reviews_grupo'], 
                                                coluna_valor='price',
                                                porcentagem_do_total=True)
-        
+            
+            bairro_grupo_filtro = st.selectbox('Bairro:', list(df['bairro_group'].unique()))
+            stats_utils.agrupamento_estilizado(df=df_copia.query('bairro_group == @bairro_grupo_filtro'), 
+                                               query='price != 0', 
+                                               agrupamento=['numero_de_reviews_grupo'], 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
+            
+            streamlit_utils.titulo_personalizado("Conclusão", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
+            st.write('''
+                        - O grupo de bairro Broklyn é o único que quanto maior a quantidade 
+                        de reviews, maior a média de valor, os demais grupos de bairros 
+                        segue a lógica contrária.
+                        - Em Manhattan a alta quantidade de reviews inpacta em 51.05% no preço médio.
+                    ''')
+
         
 
     elif option_2 == 'Relação de preço com o a quantidade de imoveis por host de forma agrupada':
@@ -681,6 +848,18 @@ if selected =="Análise Descritiva":
                                              text_align="left",
                                              color="#0081BE", 
                                              size='h3')
+        
+        st.write('''
+                    Para reduzir a cardinalidade e  facilitar a análise efetuei o agrupamento 
+                 variável calculado_host_listings_count da seguinte maneira:
+
+                 - Somente 1
+                 - Entre 2 e 5
+                 - De 5 a 10
+                 - De 10 a 50
+                 - Mais de 50               
+                ''')
+        
         with st.expander('Exibir análise'):
         
            streamlit_utils.titulo_personalizado("price x calculado_host_listings_count", 
@@ -691,7 +870,7 @@ if selected =="Análise Descritiva":
            df_copia['calculado_host_listings_count_group'] = pd.cut(df_copia['calculado_host_listings_count'],
                                                                     bins=[0, 1, 5, 10, 50,float('inf')],
                                                                     labels=['Somente 1', 
-                                                                            'Entre 1 e 5', 
+                                                                            'Entre 2 e 5', 
                                                                             'De 5 a 10', 
                                                                             'De 10 a 50',
                                                                             'Mais de 50']).astype('object')
@@ -702,8 +881,48 @@ if selected =="Análise Descritiva":
                                                coluna_valor='price',
                                                porcentagem_do_total=True)
            
+           bairro_grupo_filtro = st.selectbox('Bairro:', list(df['bairro_group'].unique()))
+           stats_utils.agrupamento_estilizado(df=df_copia.query("bairro_group == @bairro_grupo_filtro"), 
+                                               query='price != 0', 
+                                               agrupamento=['calculado_host_listings_count_group'], 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
+          
+           streamlit_utils.titulo_personalizado("Conclusão", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
+           
+           st.write('''
+                    - 66,08% Possui somente 1 imovel listado.
+                    - Em Manhattan e Bronx possuir mais do que 10 imóveis listados émais vantajoso, 
+                    consideradando média de preços.
+                    ''')
+           
+
+
+           
     elif option_2 == 'Relação de preço com o a variável disponibilidade_365 de forma agrupada':
-        streamlit_utils.titulo_personalizado("Relação de preço com o a variável disponibilidade_365 de forma agrupada", text_align="left" ,color="#0081BE", size='h3')
+        streamlit_utils.titulo_personalizado("Relação de preço com o a variável disponibilidade_365 de forma agrupada", 
+                                             text_align="left",
+                                             color="#0081BE", 
+                                             size='h3')
+        st.write('''
+                    Para reduzir a cardinalidade e  facilitar a análise efetuei o agrupamento 
+                 variável disponibilidade_365 da seguinte maneira:
+
+                  - 0 Dias
+                  - Entre 1 a 3 dias
+                  - Entre 3 a 7 dias
+                  - Entre 1 e 2 Semanas
+                  - Entre 2 Semanas e 1 Mes
+                  - Mais de 1 Mes
+                  - Mais de 2 Meses
+                  - Mais de 6 Meses
+                  - 1 Ano
+
+                ''')
+        
         with st.expander('Exibir análise'):
            streamlit_utils.titulo_personalizado("price x disponibilidade_365", 
                                                 text_align="left",
@@ -721,14 +940,30 @@ if selected =="Análise Descritiva":
                                                                             'Mais de 2 Meses',
                                                                             'Mais de 6 Meses',
                                                                             '1 Ano']).astype('object')
-
            stats_utils.agrupamento_estilizado(df=df_copia, 
                                                query='price != 0', 
                                                agrupamento=['disponibilidade_365_group'], 
                                                coluna_valor='price',
                                                porcentagem_do_total=True)
-       
- 
+           
+           bairro_grupo_filtro = st.selectbox('Bairro:', list(df['bairro_group'].unique()))
+           stats_utils.agrupamento_estilizado(df=df_copia.query('bairro_group == @bairro_grupo_filtro'), 
+                                               query='price != 0', 
+                                               agrupamento=['disponibilidade_365_group'], 
+                                               coluna_valor='price',
+                                               porcentagem_do_total=True)
+           
+           streamlit_utils.titulo_personalizado("Conclusão", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
+           st.write('''
+                        - 35,86\% dos imóveis não estão disponiveis para locação.
+                        - Os imóveis que possuem disponibilidade de 1 ano tem a maior média 
+                        de valor no conjunto de dados.
+                        - Brooklyn é o único grupo de bairros que os imóveis indisponíveis 
+                        tem a pior média de valor.
+                    ''')
 
 
     streamlit_utils.titulo_personalizado("Dados Geoespaciais", 
