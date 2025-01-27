@@ -15,7 +15,9 @@ else:
 df_copia = df.copy()
 
 
-streamlit_utils.titulo_personalizado("Data Understanding", color="#0081BE", anchor="inicio")
+streamlit_utils.titulo_personalizado("Data Understanding", 
+                                     color="#0081BE", 
+                                     anchor="inicio")
 st.divider()
 
 # Menu horizontal
@@ -56,7 +58,10 @@ if selected == "Descrição dos Dados":
 
 
 if selected =="Análise Descritiva":
-    streamlit_utils.titulo_personalizado("Dados Faltantes", text_align="left" ,color="#0081BE", size='h2')
+    streamlit_utils.titulo_personalizado("Dados Faltantes", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
     st.write('''
                 O conjunto de dados apresenta a seguinte quantidade de dados faltantes, 
                 conforme detalhado abaixo:
@@ -82,7 +87,10 @@ if selected =="Análise Descritiva":
          st.write('{np.True_}')
 
 
-    streamlit_utils.titulo_personalizado("Dados Duplicados", text_align="left" ,color="#0081BE", size='h2')
+    streamlit_utils.titulo_personalizado("Dados Duplicados", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
     st.write('''
                Não identifiquei valores duplicados no conjunto de dados, 
                e as colunas que apresentam duplicações não indicam erros.
@@ -103,7 +111,10 @@ if selected =="Análise Descritiva":
     st.divider()
 
 
-    streamlit_utils.titulo_personalizado("Análise de Dados Contínuos", text_align="left" ,color="#0081BE", size='h2')
+    streamlit_utils.titulo_personalizado("Análise de Dados Contínuos", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
     st.write('''
              Para analisar os dados contínuos, selecionarei as seguintes colunas:
               - :orange[price]
@@ -132,70 +143,121 @@ if selected =="Análise Descritiva":
             ''')
 
 
-    streamlit_utils.titulo_personalizado("Valores Discrepantes", text_align="left" ,color="#0081BE", size='h3')
+    streamlit_utils.titulo_personalizado("Valores Discrepantes", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h3')
+    
     with st.expander('Gráficos Boxplot'):
             col_1, col_2, col_3 = st.columns(3)
             with col_1:
-                streamlit_utils.titulo_personalizado("price", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("price", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
                 fig = px.box(df, y='price')
                 st.plotly_chart(fig)
 
             with col_2:
-                streamlit_utils.titulo_personalizado("minimo_noites", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("minimo_noites", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                # Plot minimo noites
                 fig = px.box(df, y='minimo_noites')
                 st.plotly_chart(fig)
             with col_3:
                 
-                streamlit_utils.titulo_personalizado("numero_de_reviews", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("numero_de_reviews", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                # Plot numero de reviews
                 fig = px.box(df, y='numero_de_reviews')
                 st.plotly_chart(fig)
 
             col_4, col_5, col_6 = st.columns(3)
             with col_4:
-                streamlit_utils.titulo_personalizado("reviews_por_mes", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("reviews_por_mes", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                # Plot reviews por mes
                 fig = px.box(df, y='reviews_por_mes')
                 st.plotly_chart(fig)
 
             with col_5:
-                streamlit_utils.titulo_personalizado("calculado_host_listings_count", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("calculado_host_listings_count", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                
                 fig = px.box(df, y='calculado_host_listings_count')
                 st.plotly_chart(fig)
 
             with col_6:
-                streamlit_utils.titulo_personalizado("disponibilidade_365", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("disponibilidade_365", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                
                 fig = px.box(df, y='disponibilidade_365')
                 st.plotly_chart(fig)
 
     with st.expander('Gráficos Histograma'):
             col_1, col_2, col_3 = st.columns(3)
             with col_1:
-                streamlit_utils.titulo_personalizado("price", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("price", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                
                 fig = px.histogram(df, x='price', nbins=50)
                 st.plotly_chart(fig)
 
             with col_2:
-                streamlit_utils.titulo_personalizado("minimo_noites", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("minimo_noites", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                
                 fig = px.histogram(df, x='minimo_noites', nbins=50 )
                 st.plotly_chart(fig)
             with col_3:
                 
-                streamlit_utils.titulo_personalizado("numero_de_reviews", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("numero_de_reviews", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                
                 fig = px.histogram(df, x='numero_de_reviews', nbins=50)
                 st.plotly_chart(fig)
 
             col_4, col_5, col_6 = st.columns(3)
             with col_4:
-                streamlit_utils.titulo_personalizado("reviews_por_mes", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("reviews_por_mes", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                
                 fig = px.histogram(df, x='reviews_por_mes', nbins=50)
                 st.plotly_chart(fig)
 
             with col_5:
-                streamlit_utils.titulo_personalizado("calculado_host_listings_count", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("calculado_host_listings_count", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                
                 fig = px.histogram(df, x='calculado_host_listings_count', nbins=50)
                 st.plotly_chart(fig)
                 
             with col_6:
-                streamlit_utils.titulo_personalizado("disponibilidade_365", text_align="left" ,color="#0081BE", size='h3')
+                streamlit_utils.titulo_personalizado("disponibilidade_365", 
+                                                     text_align="left",
+                                                     color="#0081BE", 
+                                                     size='h3')
+                
                 fig = px.histogram(df, x='disponibilidade_365')
                 st.plotly_chart(fig)
         
@@ -207,7 +269,11 @@ if selected =="Análise Descritiva":
     st.divider()
     
     
-    streamlit_utils.titulo_personalizado("Exploração Individual das Variáveis ", text_align="left" ,color="#0081BE", size='h3')        
+    streamlit_utils.titulo_personalizado("Exploração Individual das Variáveis ", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h3')       
+     
     opcoes_analise_individual = ('price', 
                                  'minimo_noites',
                                  'numero_de_reviews',
@@ -219,7 +285,11 @@ if selected =="Análise Descritiva":
 
     option = st.selectbox('Opções de Análise', opcoes_analise_individual, key='1')
     if option == 'price':
-        streamlit_utils.titulo_personalizado("price", text_align="left" ,color="#F7A600", size='h3')
+        streamlit_utils.titulo_personalizado("price", 
+                                             text_align="left",
+                                             color="#F7A600", 
+                                             size='h3')
+        
         with st.expander('Exibir Análise'):
             st.write('**price menor do que 1**')
             st.dataframe(df.query('price < 1'))
@@ -227,7 +297,8 @@ if selected =="Análise Descritiva":
                      - São imóveis diferentes de acordo com a latitude e longitude.
                      - Há imóveis que pertencem ao mesmo proprietário neste grupo de dados.
 
-                     :red[**Esses valores serão tratados na etapa de Data Preparation, podendo ser removidos ou preenchidos**]
+                     :red[**Esses valores serão tratados na etapa de Data Preparation, 
+                     podendo ser removidos ou preenchidos**]
 
                      ''')
             st.divider()
@@ -236,28 +307,45 @@ if selected =="Análise Descritiva":
             stats_utils.exibe_analise_q3_outliers(df, df.price)
 
     elif option == 'minimo_noites': 
-        streamlit_utils.titulo_personalizado("minimo_noites", text_align="left" ,color="#F7A600", size='h3')
+        streamlit_utils.titulo_personalizado("minimo_noites", 
+                                             text_align="left",
+                                             color="#F7A600", 
+                                             size='h3')
+        
         with st.expander('Exibir Análise'):
             stats_utils.exibe_analise_q3_outliers(df, df.minimo_noites)
 
     elif option == 'numero_de_reviews':
-        streamlit_utils.titulo_personalizado("numero_de_reviews", text_align="left" ,color="#F7A600", size='h3')
+        streamlit_utils.titulo_personalizado("numero_de_reviews", 
+                                             text_align="left",
+                                             color="#F7A600", 
+                                             size='h3')
         with st.expander('Exibir Análise'):
             stats_utils.exibe_analise_q3_outliers(df,df.numero_de_reviews)
     
     elif option == 'reviews_por_mes':
-        streamlit_utils.titulo_personalizado("reviews_por_mes", text_align="left" ,color="#F7A600", size='h3')
+        streamlit_utils.titulo_personalizado("reviews_por_mes", 
+                                             text_align="left",
+                                             color="#F7A600", 
+                                             size='h3')
 
         with st.expander('Exibir Análise'):
             stats_utils.exibe_analise_q3_outliers(df, df.reviews_por_mes)
 
     elif option == 'calculado_host_listings_count':
-        streamlit_utils.titulo_personalizado("calculado_host_listings_count", text_align="left" ,color="#F7A600", size='h3')
+        streamlit_utils.titulo_personalizado("calculado_host_listings_count", 
+                                             text_align="left",
+                                             color="#F7A600", 
+                                             size='h3')
         with st.expander('Exibir Análise'):
             stats_utils.exibe_analise_q3_outliers(df, df.calculado_host_listings_count)
     
     elif option == 'disponibilidade_365':
-        streamlit_utils.titulo_personalizado("disponibilidade_365", text_align="left" ,color="#F7A600", size='h3')
+        streamlit_utils.titulo_personalizado("disponibilidade_365", 
+                                             text_align="left",
+                                             color="#F7A600", 
+                                             size='h3')
+        
         with st.expander('Exibir Análise'):
             stats_utils.exibe_analise_q3_outliers(df, df.disponibilidade_365)
 
@@ -309,6 +397,7 @@ if selected =="Análise Descritiva":
         host_counts = pd.DataFrame(df.groupby('host_id')['id'].count())\
                                      .rename({'id': 'Quantidade de anuncios'}, axis=1)\
                                      .sort_values('Quantidade de anuncios', ascending=False)
+        
         st.write('Top 5 Hosts com Mais Anúncios')
         st.write(host_counts.head(5))
 
@@ -322,8 +411,6 @@ if selected =="Análise Descritiva":
                  ''')
         st.write(pd.DataFrame(df.groupby('bairro_group')['id'].count())\
                                 .rename({'id': 'Quantidade de anuncios'}, axis=1))
-
-
 
 
     col_3, col_4 = st.columns(2) 
@@ -349,8 +436,15 @@ if selected =="Análise Descritiva":
 
 
     st.divider()
-    streamlit_utils.titulo_personalizado("Exploração Multivariada", text_align="left" ,color="#0081BE", size='h2')
-    streamlit_utils.titulo_personalizado("Correlação", text_align="left" ,color="#0081BE", size='h3')
+    streamlit_utils.titulo_personalizado("Exploração Multivariada", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
+    
+    streamlit_utils.titulo_personalizado("Correlação", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h3')
     st.write('''
                 Para analisar a correlação entre as variáveis selecionei as seguintes features:
                 - :orange[price]
@@ -382,7 +476,11 @@ if selected =="Análise Descritiva":
              As únicas váriaveis que apresentam correlação ao menos moderada são: 
              :orange[reviews_por_mes] :orange[numero_de_reviews], as demais apresentam correlção fraca.
              ''')
-    streamlit_utils.titulo_personalizado("Analisando a relação entre variáveis", text_align="left" ,color="#0081BE", size='h2')
+    streamlit_utils.titulo_personalizado("Analisando a relação entre variáveis", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
+    
     option_relacao_entre_variaveis = ('Relação de preço com os bairros',
                                       'Relação de preço com o tipo de espaço',
                                       'Relação de preço com o mínimo de noites de forma agrupada',
@@ -394,9 +492,16 @@ if selected =="Análise Descritiva":
 
     option_2 = st.selectbox('Opções de Análise: ', option_relacao_entre_variaveis, key=2)
     if option_2 == 'Relação de preço com os bairros':
-        streamlit_utils.titulo_personalizado("Relação de preço com os bairros", text_align="left" ,color="#0081BE", size='h3')
+        streamlit_utils.titulo_personalizado("Relação de preço com os bairros", 
+                                             text_align="left",
+                                             color="#0081BE", 
+                                             size='h3')
+        
         with st.expander('Exibir Análise'):
-            streamlit_utils.titulo_personalizado("price X bairro_group", text_align="left" ,color="#F7A600", size='h3')
+            streamlit_utils.titulo_personalizado("price X bairro_group", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
             st.write('''
                         Fazedo um agrupamento por preço por grupo de bairros, considerando somente os 
                      alugueis com valor diferentes de 0 é possivel concluir que:
@@ -420,7 +525,11 @@ if selected =="Análise Descritiva":
 
 
             st.divider()    
-            streamlit_utils.titulo_personalizado("price x bairro", text_align="left" ,color="#F7A600", size='h3')
+            streamlit_utils.titulo_personalizado("price x bairro", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
+            
             manhattan_col, brooklyn_col,  = st.columns(2)
             Queens_col, statenisland_col = st.columns(2)
             bronx_col, analise_bairros = st.columns(2)
@@ -482,9 +591,17 @@ if selected =="Análise Descritiva":
     
         
     elif option_2 == 'Relação de preço com o tipo de espaço':         
-        streamlit_utils.titulo_personalizado("Relação de preço com o tipo de espaço", text_align="left" ,color="#0081BE", size='h3')
+        streamlit_utils.titulo_personalizado("Relação de preço com o tipo de espaço", 
+                                             text_align="left",
+                                             color="#0081BE", 
+                                             size='h3')
+        
         with st.expander('Exibir análise'):
-            streamlit_utils.titulo_personalizado("price x room_type", text_align="left" ,color="#F7A600", size='h3')
+            streamlit_utils.titulo_personalizado("price x room_type", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
+            
             stats_utils.agrupamento_estilizado(df=df, 
                                                query='price != 0', 
                                                agrupamento='room_type', 
@@ -492,9 +609,15 @@ if selected =="Análise Descritiva":
                                                porcentagem_do_total=True)
     
     elif option_2 == 'Relação de preço com o mínimo de noites de forma agrupada':
-        streamlit_utils.titulo_personalizado("Relação de preço com o mínimo de noites de forma agrupada", text_align="left" ,color="#0081BE", size='h3')
+        streamlit_utils.titulo_personalizado("Relação de preço com o mínimo de noites de forma agrupada", 
+                                             text_align="left",
+                                             color="#0081BE", 
+                                             size='h3')
         with st.expander('Exibir análise'):
-            streamlit_utils.titulo_personalizado("price x minimo_noites", text_align="left" ,color="#F7A600", size='h3')
+            streamlit_utils.titulo_personalizado("price x minimo_noites", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
             st.write('''
                         Como a feature minimo_noites possui 109 valores únicos, para reduzir a cardinalidade e facilitar a análise.
                      - Até 1 Semana
@@ -525,9 +648,16 @@ if selected =="Análise Descritiva":
 
       
     elif option_2 == 'Relação de preço com o numero de reviews de forma agrupada':
-        streamlit_utils.titulo_personalizado("Relação de preço com o numero de reviews de forma agrupada", text_align="left" ,color="#0081BE", size='h3')
+        streamlit_utils.titulo_personalizado("Relação de preço com o numero de reviews de forma agrupada", 
+                                             text_align="left",
+                                             color="#0081BE", 
+                                             size='h3')
         with st.expander('Exibir análise'):
-            streamlit_utils.titulo_personalizado("price x numero_de_reviews", text_align="left" ,color="#F7A600", size='h3')
+            streamlit_utils.titulo_personalizado("price x numero_de_reviews", 
+                                                 text_align="left",
+                                                 color="#F7A600", 
+                                                 size='h3')
+            
             df_copia['numero_de_reviews_grupo'] = pd.cut(df_copia['numero_de_reviews'],
                                                      bins=[0, 100, 200, 300,float('inf')],
                                                      labels=['Poucos Reviews', 
@@ -545,10 +675,19 @@ if selected =="Análise Descritiva":
 
     elif option_2 == 'Relação de preço com o a quantidade de imoveis por host de forma agrupada':
 
-        streamlit_utils.titulo_personalizado("Relação de preço com o a quantidade de imoveis por host de forma agrupada", text_align="left" ,color="#0081BE", size='h3')
+        streamlit_utils.titulo_personalizado("""
+                                             Relação de preço com o a quantidade de imoveis 
+                                             por host de forma agrupada""", 
+                                             text_align="left",
+                                             color="#0081BE", 
+                                             size='h3')
         with st.expander('Exibir análise'):
         
-           streamlit_utils.titulo_personalizado("price x calculado_host_listings_count", text_align="left" ,color="#F7A600", size='h3')
+           streamlit_utils.titulo_personalizado("price x calculado_host_listings_count", 
+                                                text_align="left",
+                                                color="#F7A600", 
+                                                size='h3')
+           
            df_copia['calculado_host_listings_count_group'] = pd.cut(df_copia['calculado_host_listings_count'],
                                                                     bins=[0, 1, 5, 10, 50,float('inf')],
                                                                     labels=['Somente 1', 
@@ -566,7 +705,11 @@ if selected =="Análise Descritiva":
     elif option_2 == 'Relação de preço com o a variável disponibilidade_365 de forma agrupada':
         streamlit_utils.titulo_personalizado("Relação de preço com o a variável disponibilidade_365 de forma agrupada", text_align="left" ,color="#0081BE", size='h3')
         with st.expander('Exibir análise'):
-           streamlit_utils.titulo_personalizado("price x disponibilidade_365", text_align="left" ,color="#F7A600", size='h3')
+           streamlit_utils.titulo_personalizado("price x disponibilidade_365", 
+                                                text_align="left",
+                                                color="#F7A600", 
+                                                size='h3')
+           
            df_copia['disponibilidade_365_group'] = pd.cut(df_copia['disponibilidade_365'],
                                                                     bins=[-1, 0, 3, 7, 14, 30, 60, 180, 364 , float('inf')],
                                                                     labels=['0 Dias',
@@ -588,7 +731,11 @@ if selected =="Análise Descritiva":
  
 
 
-    streamlit_utils.titulo_personalizado("Dados Geoespaciais", text_align="left" ,color="#0081BE", size='h1')
+    streamlit_utils.titulo_personalizado("Dados Geoespaciais", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
+    
     exibir_filtros = st.checkbox('Exibir filtros', value=False)
     if exibir_filtros:
         col_filtro_price, col_filtro_localizacao,kpi_cols = st.columns(3)
@@ -637,11 +784,52 @@ if selected =="Análise Descritiva":
     
     
     
-    streamlit_utils.titulo_personalizado("Análise Temporal", text_align="left" ,color="#0081BE", size='h1')
-    # Plotar um line plot com a quantidade de reviews.
-    # Agrupar por ano_mes 
-    st.write(pd.to_datetime(df['ultima_review']))
-    st.write(df[['numero_de_reviews', 'ultima_review', 'reviews_por_mes']].query('numero_de_reviews == 0').info())
+    streamlit_utils.titulo_personalizado("Análise Temporal", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
+
+    st.write('''
+             A variável ultima_review é a única no conjunto de dados que apresenta 
+             valores compatíveis com uma série temporal.
+
+             Após convertê-la para o formato de data, visto que inicialmente o tipo 
+             de dado era texto, foi possível realizar as seguintes análises:            
+            ''')
+    
+
+    df_copia['ultima_review'] = pd.to_datetime(df_copia['ultima_review'])
+    df_copia['ultima_review_ano'] = df_copia['ultima_review'].dt.year
+    df_ano_agrupado = df_copia.groupby('ultima_review_ano')[['id']].count()
+    df_ano_agrupado['% do total'] = (df_ano_agrupado['id'] / df_ano_agrupado['id'].sum()*100)
+    df_ano_agrupado['% do total'] = df_ano_agrupado['% do total'].apply(lambda x: f"{x:.2f}")
+    df_ano_agrupado = df_ano_agrupado.rename({'id': 'count'}, axis=1)
+    
+    
+    col_1, col_2 = st.columns(2)
+    with col_1:
+        st.dataframe(df_ano_agrupado.style.highlight_max(subset=['count'], color='#59deba')\
+                                          .highlight_min(subset=['count'], color='#de5959'))
+
+    with col_2:
+        st.dataframe(pd.DataFrame({'minimo': [df_copia['ultima_review'].min()],
+                                   'máximo': [df_copia['ultima_review'].max()]}))
+        
+
+ 
+
+
+    streamlit_utils.titulo_personalizado("Gráfico de Linha: ultima review", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h3')
+    fig = px.line(df.groupby(['ultima_review'])['id'].count())
+    st.plotly_chart(fig)
+
+    #st.write()
+
+
+    #st.write(df[['numero_de_reviews', 'ultima_review', 'reviews_por_mes']].query('numero_de_reviews == 0').info())
 
 
 
