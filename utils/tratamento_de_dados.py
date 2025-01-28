@@ -9,7 +9,7 @@ class TransformData:
     Classe para realizar pré-processamento de dados para precificação dos imóveis
     """
 
-    def __init__(self,df, cat_cols, num_cols):
+    def __init__(self,df, cat_cols, num_cols, treino=True):
         """
         Inicializa a classe com os dados e configurações necessárias. 
 
@@ -24,6 +24,8 @@ class TransformData:
         self.df = df
         self.cat_cols = cat_cols
         self.num_cols = num_cols
+        self.treino = treino
+        
 
 
     def _corrige_data(self):
@@ -113,10 +115,12 @@ class TransformData:
         host_ids_com_erros_ou_price_0 = [1641537, 131697576, 8993084, 2787, 101970559, 86327101, 15787004]
 
         # Subtrai a contagem de 'calculado_host_listings_count'
-        self.df.loc[self.df['host_id'].isin(host_ids_com_erros_ou_price_0), 'calculado_host_listings_count'] -= 1  
+        self.df.loc[self.df['host_id'].isin(host_ids_com_erros_ou_price_0), 'calculado_host_listings_count'] -= 1 
+         
+        if self.treino:
+            # Seleciona apenas os dados onde price é maior que 0
+            self.df = self.df[self.df['price'] > 0]
 
-        # Seleciona apenas os dados onde price é maior que 0
-        self.df = self.df[self.df['price'] > 0]
 
     def _fill_na(self):
         '''
@@ -136,11 +140,10 @@ class TransformData:
         - Features: Combinação de `num_cols` e `cat_cols`.
         - Target: Coluna `price`.
         '''
-
         X = self.df[self.num_cols + self.cat_cols]
         y = self.df['price']
-
         return X, y
+      
 
     def fit_transform(self):
         '''
@@ -164,6 +167,7 @@ class TransformData:
         self._fill_na()
         X, y = self._selecao_de_features()
         return X, y
+       
 
 def obtem_palavras_comuns(df: pd.DataFrame, column: str='nome', top:int=20, stopwords:list=None):
     text = ' '.join(df[column].dropna().values)
