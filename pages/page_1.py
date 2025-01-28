@@ -511,7 +511,7 @@ if selected =="Análise Descritiva":
                  com outros inquilinos ou proprietarios, porem o quarto é individual).
                  - **Shared room**: Quarto compartilhado.
                  ''')
-
+    
 
     st.divider()
     streamlit_utils.titulo_personalizado("Exploração Multivariada", 

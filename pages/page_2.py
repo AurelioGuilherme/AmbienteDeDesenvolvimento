@@ -326,25 +326,6 @@ streamlit_utils.titulo_personalizado("Jupyter Notebook",
                                      color="#0081BE", 
                                      size='h2')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 st.write('A baixo você pode conferir o Jupyter Notebook que detalha o processo de desenvolvimento da etada Data Preparation.')
 
 with st.expander('**Notebook Jupyter**'):
@@ -354,26 +335,6 @@ with st.expander('**Notebook Jupyter**'):
                                          color="#F7A600")
 
     streamlit_utils.load_notebook('./Notebooks/data_preparation.ipynb')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 st.markdown("""
              <style>

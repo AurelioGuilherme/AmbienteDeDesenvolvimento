@@ -21,27 +21,3 @@ if option_models == 'Regressão Linear':
 
         
 
-
-st.markdown("""
-             <style>
-             .scroll-button {
-                 position: fixed;
-                 bottom: 20px;
-                 right: 20px;
-                 background-color: #0081BE;
-                 color: white;
-                 border: none;
-                 padding: 10px 20px;
-                 border-radius: 5px;
-                 cursor: pointer;
-                 font-size: 16px;
-                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-             }
-             .scroll-button:hover {
-                 background-color: #005f8b;
-             }
-             </style>
-             <a href="#Modeling e Evaluation">
-                 <button class="scroll-button">Voltar ao Início.</button>
-             </a>
-            """,unsafe_allow_html=True) 
