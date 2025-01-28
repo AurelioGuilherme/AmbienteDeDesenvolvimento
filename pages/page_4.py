@@ -2,6 +2,13 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from utils import streamlit_utils, layout_indicium, valida_dados_deploy, tratamento_de_dados
 import pandas as pd
+import pickle
+
+with open("Models/Transformer_RL.pkl", 'rb') as f:
+    transformer = pickle.load(f)
+    
+with open('Models/modelo_precificacaoRL.pkl', 'rb') as f:
+    model = pickle.load(f)
 
 
 
