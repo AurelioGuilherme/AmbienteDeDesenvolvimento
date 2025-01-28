@@ -93,18 +93,23 @@ if selected =="Descrição do Projeto":
 
 if selected == "Objetivos e Estrutura":
     streamlit_utils.titulo_personalizado("Objetivo", size="h3", text_align='left', color="#0081BE")
-    st.write("""             
-                O principal objetivo é a experiênciação das ferramentas usadas com fim de 
-                :blue-background[**desenvolver um modelo de previsão de preços a partir 
-                do dataset oferecido**] contendo a ducumentação, histórico de desevolvimento 
-                e avaliação dos modelos testados utilizando frameworks de MLOps para 
-                garantir a eficiência, reprodutibilidade e escalabilidade. 
+    st.write(""" 
+                Definirei os seguintes objetivos:   
+                      
+                - Experiênciação de ferramentas usadas para desenvolver um modelo de previsão 
+                de preços a partir do dataset oferecido contendo a ducumentação, histórico de desevolvimento 
+                e avaliação dos modelos testados utilizando frameworks de MLOps para garantir a eficiência, 
+                reprodutibilidade e escalabilidade. 
 
-                Vale ressaltar justamente o uso do framework Streamlit para criar a aplicação Web interativa, 
-                contendo todas as etapas do desenvolvimento seguindo o framework CRISP-DM como metodologia. 
-
-
+                - Uso do framework Streamlit para criar a aplicação Web garantindo uma visualização interativa,
+                diferente de um Jupyter Notebook, contendo todas as etapas do desenvolvimento seguindo 
+                o framework CRISP-DM como metodologia. 
              
+                - Desenvolver um processo de preparação de dados que permita a experimentação de diferentes features, 
+                possibilitando defini-las de maneira simples e intuitiva, além de facilitar sua utilização na etapa de modelagem.  
+
+                - Desenvolver uma aplicação interativa que funcione como um "produto", onde o usuário preenche um formulário
+                 com as características desejadas e, com base nos dados fornecidos, o sistema retorna a previsão do preço de forma rápida.     
 
             """)
     st.divider()

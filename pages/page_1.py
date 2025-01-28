@@ -1,8 +1,16 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from utils import streamlit_utils, layout_indicium, stats_utils
+from utils import streamlit_utils, layout_indicium, stats_utils,tratamento_de_dados
 import pandas as pd
+import matplotlib.pyplot as plt
 import plotly.express as px
+from wordcloud import WordCloud
+from collections import Counter
+import re
+import scipy.stats as stats
+import statsmodels.api as sm
+from statsmodels.formula.api import ols
+
 
 
 layout_indicium.layout_custom()
@@ -19,9 +27,8 @@ st.divider()
 selected = option_menu(menu_title=None,
                        options=["Descrição dos Dados",
                                 "Análise Descritiva",
-                                "Análise Inferencial",
-                                "Resumo"],
-                       icons=["list-task", "list-task", "list-task", "list-task"],
+                                "Análise Inferencial"],
+                       icons=["list-task", "list-task", "list-task"],
                        orientation="horizontal")
 
 if selected == "Descrição dos Dados":
@@ -1056,23 +1063,283 @@ if selected =="Análise Descritiva":
     fig = px.line(df.groupby(['ultima_review'])['id'].count())
     st.plotly_chart(fig)
 
-    #st.write()
+    st.divider()
+
+    streamlit_utils.titulo_personalizado("Análise de Dados Textuais.", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
+    
+    col_1_analise_palavras, col_2_analise_palavras = st.columns(2)
+    with col_1_analise_palavras:
+        streamlit_utils.titulo_personalizado("Nuvem de palavras", 
+                                         text_align="center",
+                                         color="#0081BE", 
+                                         size='h3')
+        st.write('Nuvem de palavras gerada a partir de todo o conjunto de dados. ')
+  
+        nome_text = ' '.join(df['nome'].dropna().values)
+        wordcloud = WordCloud(width=800, height=400, background_color="white",colormap='Blues').generate(nome_text)
+        st.image(wordcloud.to_array())
+
+    with col_2_analise_palavras:
+        streamlit_utils.titulo_personalizado("20 Palavras Mais Comuns nos Nomes", 
+                                         text_align="center",
+                                         color="#0081BE", 
+                                         size='h3')
+
+        words = re.findall(r'\w+', nome_text.lower())
+        stopwords = set(['the', 'in', 'of', 'and', 'to', 'a', 'at', 'for', 'on', 'with', 'room', 'rooms', 'nyc', 'new', 'york'])
+        words = re.findall(r'\w+', nome_text.lower())
+        filtered_words = [word for word in words if word not in stopwords and len(word) > 2]
+        word_counts = Counter(filtered_words).most_common(20)
+    
+        df_words = pd.DataFrame(word_counts, columns=['Palavra', 'Frequência'])
+        fig = px.bar(df_words, 
+                     x='Frequência', 
+                     y='Palavra', 
+                     orientation='h',
+                     color='Frequência',
+                     color_continuous_scale='Blues')
+        fig.update_layout(yaxis={'categoryorder':'total ascending'})
+        st.plotly_chart(fig)
+    
+    streamlit_utils.titulo_personalizado("Comparação de Palavras-Chave por Faixa de Preço", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
+
+    
+    preco_medio = df['price'].median()
+    alto_valor = df[df['price'] > preco_medio]
+    baixo_valor = df[df['price'] <= preco_medio]
+
+    col1, col2 = st.columns(2)
+    with col1:
+        palavras_comuns_alto_valor = tratamento_de_dados.obtem_palavras_comuns(alto_valor, top=10, stopwords=stopwords)
+        df_high = pd.DataFrame(palavras_comuns_alto_valor, columns=['Palavra', 'Frequência'])
+        fig = px.bar(df_high,
+                     x='Frequência',
+                     y='Palavra',
+                     orientation='h',
+                     title='Imóveis de Alto Valor',
+                     color='Frequência',
+                     color_continuous_scale='Blues')
+        fig.update_layout(yaxis={'categoryorder':'total ascending'}, height=500)
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col2:  
+        palavras_comuns_baixo_valor = tratamento_de_dados.obtem_palavras_comuns(baixo_valor,top=10, stopwords=stopwords)
+        df_low = pd.DataFrame(palavras_comuns_baixo_valor, columns=['Palavra', 'Frequência'])
+        fig = px.bar(df_low,
+                     x='Frequência',
+                     y='Palavra',
+                     orientation='h',
+                     title='Imóveis de Baixo Valor',
+                     color='Frequência',
+                     color_continuous_scale='Blues')
+        fig.update_layout(yaxis={'categoryorder':'total ascending'}, height=500)
+        st.plotly_chart(fig, use_container_width=True)
+
+    streamlit_utils.titulo_personalizado("Palavras presentes somente em imóveis de alto valor", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
+    palavras_comuns_alto_valor = tratamento_de_dados.obtem_palavras_comuns(alto_valor, top=5000,stopwords=stopwords)
+    palavras_comuns_baixo_valor = tratamento_de_dados.obtem_palavras_comuns(baixo_valor, top=5000, stopwords=stopwords)
+
+    set_palavras_alto = set()
+    set_palavras_baixo = set()
+
+    for palavra, _ in palavras_comuns_alto_valor:
+        set_palavras_alto.add(palavra)
+
+    for palavra, _ in palavras_comuns_baixo_valor:
+        set_palavras_baixo.add(palavra)
 
 
-    #st.write(df[['numero_de_reviews', 'ultima_review', 'reviews_por_mes']].query('numero_de_reviews == 0').info())
+    palavras_exclusivas_alto = set_palavras_alto - set_palavras_baixo
+
+    frequencias_exclusivas_alto = []
+    for palavra, qtd in palavras_comuns_alto_valor:
+        if palavra in palavras_exclusivas_alto:
+            frequencias_exclusivas_alto.append((palavra, qtd))
+
+    nome_text = ' '.join([word * freq for word, freq in frequencias_exclusivas_alto])
+    wordcloud = WordCloud(width=800, height=400, background_color="white").generate(nome_text)
+    st.image(wordcloud.to_array())
+
+    st.dataframe(df[df['nome'].str.contains('2block', case=False, na=False)])
+    
+
+    streamlit_utils.titulo_personalizado("Conclusão", 
+                                         text_align="left" ,
+                                         color="#F7A600", 
+                                         size='h3')
+    st.write('''
+            - Somente com a análise descritiva é difícil confirmar um padrão claro de diferença 
+             entre os grupos de imóveis de baixo e alto padrão, porem os imóveis de alto padrão tem 
+             uma incidencia maior de palavras que indicam luxo.
+            - É comum a descrição incluir a localização do imóvel ou 
+             o tipo de espaço como loft ou apartarment. 
+            - Subtraindo as 5000 palavras mais frequentes nos dois conjuntos para assim obter as palavras
+             únicas, é possivel identificar que os imóveis de alto padrão possuem palavras que indicam estar
+             em Manhattan, como "MAG" e "UPW".
+            - Outra palavra que pode indicar que é um imóvel de alto padrão é "2block", que indica
+             que o imóvel está a 2 quadras de algum ponto importante ou metro.          
+              
+            ''')
+
+
+
+if selected =="Análise Inferencial":
+    streamlit_utils.titulo_personalizado("Análise Inferencial", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h1')
+
+    streamlit_utils.titulo_personalizado("Hipóteses", 
+                                         text_align="left",
+                                         color="#0081BE", 
+                                         size='h2')
+    
+    option_analise_inferencial = ['Existe diferença entre os preços dos imóveis de acordo com o tipo de espaço?',
+                                  'Existem diferenças significativas entre o preço nos grupos de bairros?',
+                                  'Existe associação entre o tipo de espaço e o bairro?'                                  
+                                  ]
+    
+    options = st.selectbox('Opções de Análise: ', option_analise_inferencial, key=3)
+
+    if options == 'Existe diferença entre os preços dos imóveis de acordo com o tipo de espaço?':
+        st.write('''
+                 Compara as médias de preços entre diferentes tipos de quarto para verificar se há diferença 
+                 estatisticamente significativa
+                 
+                 - Hipótese Nula: Não há diferença significativa nos preços médios entre os diferentes tipos de quarto.
+                 - Hipótese Alternativa: Existe uma diferença significativa nos preços médios entre os diferentes tipos de quarto.
+
+                 ''')
+      
+        groups = df[df['room_type'].isin(['Entire home/apt', 'Private room'])].groupby('room_type')['price']
+        group1 = groups.get_group('Entire home/apt')
+        group2 = groups.get_group('Private room')
+
+        t_stat, p_value = stats.ttest_ind(group1, group2, equal_var=False)
+        streamlit_utils.titulo_personalizado("Resultado do Teste t", 
+                                         text_align="left",
+                                         color="#F7A600", 
+                                         size='h3')
+        
+        st.write(f"Estatística t: {t_stat:.2f}")
+        st.write(f"Valor p: {p_value:.4f}")
+        st.write("Existe diferença significativa entre os preços" if p_value < 0.05 
+                 else "Não há evidência de diferença significativa")
+
+        st.code('''
+                # Divisão do conjunto de dados por room_type diferentes agrupados por preço
+                groups = df[df['room_type'].isin(['Entire home/apt', 'Private room'])].groupby('room_type')['price']
+                group1 = groups.get_group('Entire home/apt')
+                group2 = groups.get_group('Private room')
+
+                # Aplicação do Teste T para comparar os dois grupos
+                t_stat, p_value = stats.ttest_ind(group1, group2, equal_var=False)
+
+                # Exibindo os resultados.
+                print("Resultado do Teste t")
+                print(f"Estatística t: {t_stat:.2f}")
+                print(f"Valor p: {p_value:.4f}")
+                print("Existe diferença significativa entre os preços" if p_value < 0.05 
+                else "Não há evidência de diferença significativa")
+            ''') 
+
+
+    if options =='Existem diferenças significativas entre o preço nos grupos de bairros?':
+            numerical_var = 'price'
+            categorical_var = 'bairro_group'
+            anova_data = df[[numerical_var, categorical_var]].dropna()
+            model = ols(f'{numerical_var} ~ C({categorical_var})', data=anova_data).fit()
+            anova_resultado = sm.stats.anova_lm(model, typ=2)
+            streamlit_utils.titulo_personalizado('ANOVA: "price" por "bairro_group"', 
+                                         text_align="left",
+                                         color="#F7A600", 
+                                         size='h3')
+            
+            st.write('''
+                    Avalia se existe diferença significativa nos preços médios entre os diferentes grupos de bairro.
+                     
+                    - Hipótese Nula: Não há diferença significativa nos preços médios entre os diferentes grupos de bairro.
+                    - Hipótese Alternativa: Existe pelo menos uma diferença significativa nos preços médios entre os 
+                     diferentes grupos de bairro.
+                ''')
+            
+            f_value = anova_resultado['F'][0]
+            p_value = anova_resultado['PR(>F)'][0]
+
+            st.write(f'**F-value:** {f_value:.2f}, **Valor-p:** {p_value:.4f}\n\n'
+                     'Há diferenças significativas entre os distritos nos preços.' if p_value < 0.05 
+                     else 'Não foram encontradas diferenças significativas entre os distritos nos preços.')
+            
+            st.code('''
+                    # Definição de variáveis para análise                  
+                    numerical_var = 'price'
+                    categorical_var = 'bairro_group'
+
+                    # Aplicação do teste ANOVA - Soma de quadrados parciais 
+                    anova_data = df[[numerical_var, categorical_var]].dropna()
+                    model = ols(f'{numerical_var} ~ C({categorical_var})', data=anova_data).fit()
+                    anova_resultado = sm.stats.anova_lm(model, typ=2)
+                    f_value = anova_resultado['F'][0]
+                    p_value = anova_resultado['PR(>F)'][0]
+
+                    # Exibição do resultado   
+                    print(f'**F-value:** {f_value:.2f},**Valor-p:** {p_value:.4f}'
+                         'Há diferenças significativas entre os distritos nos preços.' if p_value < 0.05 
+                         else 'Não foram encontradas diferenças significativas entre os distritos nos preços.')
+                ''')
+            
+    if options == 'Existe associação entre o tipo de espaço e o bairro?':
+
+        tabela_cruzada = pd.crosstab(df['room_type'], df['bairro_group'])
+        chi2, p, _, _ = stats.chi2_contingency(tabela_cruzada)
+
+        streamlit_utils.titulo_personalizado('Teste Qui-quadrado (room_type e bairro_group', 
+                                            text_align="left",
+                                            color="#F7A600", 
+                                            size='h3')
+        st.write('''
+                    Verifica associação se existe associação significativa entre variáveis.
+                 
+                   - Hipótese Nula: Não há associação significativa entre o tipo de quarto e o grupo de bairro.
+                   - Hipótese Alternativa: Existe uma associação significativa entre o tipo de quarto e o grupo de bairro.
+
+                ''')
+    
+        st.write(f"Estatística Qui²: {chi2:.2f}")
+        st.write(f"Valor p: {p:.4f}")
+        st.write("Existe associação significativa" if p < 0.05 
+                 else "Não há evidência de associação significativa")
+        
+        st.code('''
+
+        # Cria tabela cruzada das variáveis a serem comparadas
+        tabela_cruzada = pd.crosstab(df['room_type'], df['bairro_group'])
+        
+        # Aplica o teste qui2 
+        chi2, p, _, _ = stats.chi2_contingency(tabela_cruzada)
+    
+        # Exibe os resultados
+        print(f"Estatística Qui²: {chi2:.2f}")
+        print(f"Valor p: {p:.4f}")
+        print("Existe associação significativa" if p < 0.05 
+                 else "Não há evidência de associação significativa")
+            ''')
 
 
 
 
-#if selected =="Análise Inferencial":
-#    streamlit_utils.titulo_personalizado("Análise Inferencial", text_align="left" ,color="#0081BE", size='h1') 
-#
-#if selected =="Resumo":
-#    streamlit_utils.titulo_personalizado("Resumo", text_align="left" ,color="#0081BE", size='h1') 
-#
-#    streamlit_utils.titulo_personalizado("NOTEBOOK JUPYTER", text_align="left" ,color="#0081BE", size='h2')        
-#    with st.expander('Exibir Notebook'):
-#        streamlit_utils.load_notebook('./Notebooks/data_understanding.ipynb')
+streamlit_utils.titulo_personalizado("NOTEBOOK JUPYTER", text_align="left" ,color="#0081BE", size='h2')        
+with st.expander('Exibir Notebook'):
+    streamlit_utils.load_notebook('./Notebooks/data_understanding.ipynb')
 
 
 

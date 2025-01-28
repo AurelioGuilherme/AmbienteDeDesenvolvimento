@@ -11,25 +11,65 @@ layout_indicium.layout_custom()
 df = streamlit_utils.carrega_dados_cache()
 
 
-streamlit_utils.titulo_personalizado("Data Preparation", color="#0081BE",anchor='inicio_data_preparation')
+streamlit_utils.titulo_personalizado("Data Preparation", color="#0081BE", anchor='inicio_data_preparation')
 st.divider()
-
+streamlit_utils.titulo_personalizado("Abordagem de Experimentação", color="#0081BE", size='h2', text_align='left')
 st.write('''
+            Esta etapa foi totalmente pensada em experimentação, por este motivo criei features categóricas de variáveis 
+            contínuas, visto que algumas transformações podem não fazer tanto sentido.
+
             O processo de tratamento de dados foi detalhado no arquivo Jupyter Notebook 
             :orange[data_preparation.ipynb]. Além disso, uma classe chamada :orange[TransformData] foi implementada no 
             arquivo :orange[tratamento_de_dados.py], a qual encapsula todas as etapas de 
             tratamento, automatizando todo o processo de preparação dos dados.
          
+            Com esta abordagem potencializa a experimentação de diferentes features, visto que posso escolher usar 
+            features categorizadas de dados contínuos na etapa da modelagem, verificar a performance e se necessário 
+            mudar a abordagem.
+         
+            Esta abordagem também possibilita a adição de novos tratamentos e criação de novas features de forma mais simples,
+            basta adcionar o tratamento adicional a classe como um novo método e incluir no pipeline no método `fit_transform`.
+         
             Para instanciar a classe eu preciso fornecer os parâmetros :orange[df] que corresponde ao conjunto de dados,
-            :orange[cat_cols] que  corresponde a uma lista das features categóricas e :orange[num_cols] que corresponde
-            as minhas features númericas.
+            :orange[cat_cols] que  corresponde a uma lista das features categóricas que desejo experienciar, 
+            e :orange[num_cols] que corresponde as minhas features númericas.
 
-            Selecionei as features para a modelagem da seguinte maneira:
+            Assim sendo, tenho disponível as seguintes features para escolher na etapa da modelagem:
+         
+            **Features_numericas**
+            - numero_de_reviews
+            - reviews_por_mes
+            - calculado_host_listings_count
+            - latitude
+            - longitude 
+            - minimo_noites        
+
+            **features_categoricas**
+            - room_type
+            - bairro_group
+            - bairro
+            - minimo_noites_categorico
+            - disponibilidade_365_categorico
+            - ultima_review_semestre
+            - valor_preenchido        
+
+            As demais features, como nome, host_name, id e host_id são descritivas e podem não ser relevantes para o modelo,
+          desta forma não utilizei-as nesta etapa.
+            ''')
+st.divider()
+
+streamlit_utils.titulo_personalizado("1ª experimentação - Abordagem com Features Categóricas", color="#0081BE", size='h2', text_align='left')
+
+st.write('''
+            Em minha primeira experimentação decidi por uma abordagem baseda em mais features categoricas assim removendo 
+            variáveis contínuas de origem, foram selecionadas as seguintes features: 
+           
             
             **Features_numericas**
             - numero_de_reviews
             - reviews_por_mes
             - calculado_host_listings_count
+            
 
             **features_categoricas**
             - room_type
@@ -38,9 +78,9 @@ st.write('''
             - disponibilidade_365_categorico
             - ultima_review_semestre
             - valor_preenchido
-         
-
          ''')
+
+         
 
 features_numericas = ['numero_de_reviews',
                       'reviews_por_mes',
@@ -228,18 +268,14 @@ streamlit_utils.titulo_personalizado("Divisão dos Dados Para Treino, Teste e Ca
 
 st.write('''
 
-        A divisão de dados será feita em 3 conjuntos, treino, teste e calibração, isso porque
-         utilizarei conformal prediction, onde é necessário um conjunto de dados de calibração 
-         para validar estatísticamente os intervalos previstos.
-
-         A divisão dos dados foi feita da seguinte maneira:
+        A divisão de dados será feita em 2 conjuntos, treino e teste com a seguinte divisão:
          
-         - **Treino**: 60\% dos dados
-         - **Teste** : 20\% dos dados
-         - **Calibração**: 20\% dos dados
+         - **Treino**: 70\% dos dados
+         - **Teste** : 30\% dos dados
+         
         ''')
-X_train, X_temp, y_train, y_temp = train_test_split(X, y, train_size=0.6, random_state=42)
-X_calib, X_test, y_calib, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.7, random_state=42)
+
 
 streamlit_utils.titulo_personalizado("Enconding e Padronização", 
                                      text_align='left', 
@@ -266,8 +302,7 @@ st.write('''
 
 st.write(f'''
             Resultando nas seguintes dimensões dos dados:
-            - Treino: {transformer.transform(X_train).shape[0]} linhas {transformer.transform(X_train).shape[1]} features.
-            - Calibração: {transformer.transform(X_calib).shape[0]} linhas {transformer.transform(X_calib).shape[1]} features.
+            - Treino: {transformer.transform(X_train).shape[0]} linhas {transformer.transform(X_train).shape[1]} features
             - Teste: {transformer.transform(X_test).shape[0]} linhas {transformer.transform(X_test).shape[1]} features.
          ''')
 

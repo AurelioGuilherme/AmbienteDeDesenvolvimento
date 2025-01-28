@@ -1,4 +1,8 @@
 import pandas as pd
+from wordcloud import WordCloud
+from collections import Counter
+import re
+
 
 class TransformData:
     """
@@ -161,3 +165,8 @@ class TransformData:
         X, y = self._selecao_de_features()
         return X, y
 
+def obtem_palavras_comuns(df: pd.DataFrame, column: str='nome', top:int=20, stopwords:list=None):
+    text = ' '.join(df[column].dropna().values)
+    words = re.findall(r'\w+', text.lower())
+    filtered_words = [word for word in words if word not in stopwords and len(word) > 2]
+    return Counter(filtered_words).most_common(top)
