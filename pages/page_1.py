@@ -32,7 +32,7 @@ selected = option_menu(menu_title=None,
                        orientation="horizontal")
 
 if selected == "Descrição dos Dados":
-    streamlit_utils.titulo_personalizado("Descrição dos Dados", text_align="left" ,color="#0081BE", size='h2')
+    streamlit_utils.titulo_personalizado("Dicionário de Dados", text_align="left" ,color="#0081BE", size='h2')
     st.write('''
              A base de dados fornecida contém :blue[16 colunas] e :blue[48.894 linhas], 
              abaixo estão as descrições detalhadas juntamente com a tipagem dos dados:
@@ -55,6 +55,8 @@ if selected == "Descrição dos Dados":
              **:orange[disponibilidade_365]** - Contém o número de dias em que o anúncio está disponível para reserva (Tipo: :green[int64])  
             ''')
     st.divider()
+
+    streamlit_utils.titulo_personalizado("Visualização Inicial dos Dados", text_align="left" ,color="#0081BE", size='h2')
     st.dataframe(df)
 
 

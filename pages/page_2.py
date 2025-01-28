@@ -58,7 +58,10 @@ st.write('''
             ''')
 st.divider()
 
-streamlit_utils.titulo_personalizado("1ª experimentação - Abordagem com Features Categóricas", color="#0081BE", size='h2', text_align='left')
+streamlit_utils.titulo_personalizado("1ª experimentação - Abordagem com Features Continuas Transformadas em Categóricas", 
+                                     color="#0081BE", 
+                                     size='h2', 
+                                     text_align='left')
 
 st.write('''
             Em minha primeira experimentação decidi por uma abordagem baseda em mais features categoricas assim removendo 
@@ -334,8 +337,8 @@ with st.expander('Exibir o código da implementação:'):
                 X, y  = cleaner_data.fit_transform()
 
                 # Divisão dos dados para treino, calibração e teste
-                X_train, X_temp, y_train, y_temp = train_test_split(X, y, train_size=0.6, random_state=42)
-                X_calib, X_test, y_calib, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
+                X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.6, random_state=42)
+         
 
                 # Criação do pipeline de encoding e padronização
                 transformer = ColumnTransformer(
@@ -352,10 +355,40 @@ with st.expander('Exibir o código da implementação:'):
                 # Aplicando as transformações ao conjunto de dados.    
                 X_train = transformer.transform(X_train)
                 X_test = transformer.transform(X_test)
-                X_calib = transformer.transform(X_calib)
-
+            
                             ''')
     
+
+streamlit_utils.titulo_personalizado("2ª experimentação - Abordagem com Features Continuas Padronizadas.", 
+                                    text_align='left',
+                                     color="#0081BE", 
+                                     size='h2')
+
+streamlit_utils.titulo_personalizado("Escolha de Features", 
+                                    text_align='left',
+                                     color="#0081BE", 
+                                     size='h2')
+
+st.write('''
+            A estratégia de padronização e enconding se manteve, porem foi selecionadas as seguintes features:
+         
+            features_numericas 
+             - numero_de_reviews
+             - reviews_por_mes
+             - calculado_host_listings_count
+             - disponibilidade_365
+             - latitude
+             - longitude
+             - minimo_noites
+
+            **features_categoricas**
+             - room_type
+             - bairro_group
+             - valor_preenchido
+
+        ''')
+
+
 streamlit_utils.titulo_personalizado("Jupyter Notebook", 
                                     text_align='left',
                                      color="#0081BE", 

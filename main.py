@@ -13,7 +13,7 @@ st.divider()
 
 # Menu horizontal
 selected = option_menu(menu_title=None,
-                       options=["Descrição do Projeto","Objetivos e Estrutura"],
+                       options=["Descrição do Projeto","Estrutura"],
                        icons=["house", "list-task"],
                        orientation="horizontal")
 
@@ -82,16 +82,7 @@ if selected =="Descrição do Projeto":
                 Essas mudanças representam um desafio adicional para o projeto que precisa se adaptar enquanto explora 
                 as oportunidades de um dos mercados imobiliários mais atrativos e competitivos do mundo.""")
     
-    with st.expander("Fontes"):
-        st.write("""
-                    [Exame - 8.set.2023: Crise de aluguel? Entenda por que Nova York proibiu reservas curtas no Airbnb](https://exame.com/mundo/crise-de-aluguel-entenda-por-que-nova-york-proibiu-reservas-curtas-no-airbnb/)
-                    
-                    [Folha de São Paulo - 16.jan.2025: NY teve 2º maior número de visitantes em 2024 e prevê recorde em 2025](https://www1.folha.uol.com.br/turismo/2025/01/ny-teve-2o-maior-numero-de-visitantes-em-2024-e-preve-quebrar-recorde-em-2025.shtml)
-                """)
-    
-
-
-if selected == "Objetivos e Estrutura":
+    st.divider()
     streamlit_utils.titulo_personalizado("Objetivo", size="h3", text_align='left', color="#0081BE")
     st.write(""" 
                 Definirei os seguintes objetivos:   
@@ -113,35 +104,104 @@ if selected == "Objetivos e Estrutura":
 
             """)
     st.divider()
-    streamlit_utils.titulo_personalizado("Estrutura", size="h3", text_align='left', color="#0081BE")
-    st.write("""
-                **Entendimento do Negócio:**
-                Trata-se da descrição geral do projeto e a contextualização sobre o problema proposto. 
+    
+    
+    with st.expander("Fontes"):
+        st.write("""
+                    [Exame - 8.set.2023: Crise de aluguel? Entenda por que Nova York proibiu reservas curtas no Airbnb](https://exame.com/mundo/crise-de-aluguel-entenda-por-que-nova-york-proibiu-reservas-curtas-no-airbnb/)
+                    
+                    [Folha de São Paulo - 16.jan.2025: NY teve 2º maior número de visitantes em 2024 e prevê recorde em 2025](https://www1.folha.uol.com.br/turismo/2025/01/ny-teve-2o-maior-numero-de-visitantes-em-2024-e-preve-quebrar-recorde-em-2025.shtml)
+                """)
+    
 
+
+if selected == "Estrutura":
+
+    streamlit_utils.titulo_personalizado("Estrutura", size="h3", text_align='left', color="#0081BE")
+
+    st.write('''
+                  **Business Understanding:**
+                Trata-se da descrição geral do projeto e a contextualização sobre o problema proposto. 
+                 - Descrição do Projeto
                     - Sobre Nova York.
                     - Mercado imobiliário.
-
-                **Entendimento dos Dados:** 
-                Análise dos dados fornecidos, identificando os problemas
-
-                    - Analise inicial (Estudo das variáveis)
-                    - Dicionário dos dados
-                    - Outliers
-                    - Dados Ausentes
-                    - Dados duplicados 
-                    - Hipóteses de negócio relacionadas (Propostas pelo desafio e criadas)
-        
-                **Data Preparation:**
-                 Descrição e motivação para as transformações nos dados.
-
-                    - Dados categoricos 
-                    - Dados contínuos
-
-                **Modelagem:**
-                 Descrição dos modelos testados e etapas do desenvolvimento e avalição dos modelos.
-
-                    - MlFlow UI
-                    - Conformal Prediction
-                    - Métricas        
+                    - Objetivo
+            ''')
+    
+    st.divider()
+    st.write("""
+                **Data Understanding:** 
+                Análise dos dados fornecidos, identificando os problemas, testando e hipóteses.
+                - Descrição dos Dados
+                    - Dicionário de Dados
+                    - Visualização Inicial dos Dados
+                - Análise Descritiva
+                    - Dados Faltantes
+                    - Dados Duplicados
+                    - Análise de Dados Contínuos
+                    - Valores Discrepantes
+                    - Exploração Individual das Variáveis Contínuas
+                        - price
+                        - minimo_noites
+                        - numero_de_reviews 
+                        - reviews_por_mes
+                        - calculado_host_listings_count
+                        - disponibilidade_365
+                    - Análise de Dados Categóricos
+                        - host_id
+                        - bairro_group
+                        - bairro
+                        - room_type
+                    - Exploração Multivariada
+                        - Correlação
+                    - Analisando a relação entre variáveis
+                        - Relação de preço com os bairros
+                        - Relação de preço com o tipo de espaço
+                        - Relação de preço com o mínimo de noites de forma agrupada
+                        - Relação de preço com o numero de reviews de forma agrupada
+                        - Relação de preço com o a quantidade de imoveis por host de forma agrupada
+                        - Relação de preço com o a variável disponibilidade_365 de forma agrupada
+                    - Dados Geoespaciais
+                    - Análise Temporal
+                    - Análise de Dados Textuais.
+                        - Comparação de Palavras-Chave por Faixa de Preço
+                        - Palavras presentes somente em imóveis de alto valor
+                    - Conclusão
+                - Análise Inferencial
+                    - Hipóteses
+                        - Existe diferença entre os preços dos imóveis de acordo com o tipo de espaço?
+                        - Existem diferenças significativas entre o preço nos grupos de bairros?
+                        - Existe associação entre o tipo de espaço e o bairro?
             """)
-
+    st.divider()
+    st.write('''
+                **Data Preparation:**
+             Estratégia de tratamento de dados para limpar, transformar e organizar os dados brutos 
+             para torná-los adequados para análise e modelagem. 
+             - Abordagem de Experimentação
+             - 1ª experimentação - Abordagem com Features Continuas Transformadas em Categóricas
+              - Divisão dos Dados Para Treino, Teste e Calibração
+              - Enconding e Padronização
+             - 2ª experimentação - Abordagem com Features Continuas Padronizadas.
+              - Escolha de Features
+            ''')
+    st.divider()
+    st.write('''
+                **Modeling:**
+             A etapa de modelagem e avaliação do Modelo.
+             - Modelagem
+                - Modelo Regressão Linear
+                - Modelo SVR
+                - Modelo XGBoost
+             - MLFlOW
+             - Avaliação
+             - Metricas
+                ''')
+    st.divider()
+    st.write('''
+                **Deploy - Produto:**
+             Aplicação do Modelo treinado
+                - Prevendo o Valor
+                    - Valor Previsto
+                    - Localização
+             ''')

@@ -10,13 +10,17 @@ with open("Models/Transformer_RL.pkl", 'rb') as f:
 with open('Models/modelo_precificacaoRL.pkl', 'rb') as f:
     model = pickle.load(f)
 
-
-
 # Layout
 layout_indicium.layout_custom()
 streamlit_utils.titulo_personalizado("Deploy - Produto", color="#0081BE")
 st.divider()
 
+streamlit_utils.titulo_personalizado("Prevendo o Valor", 
+                                     color="#0081BE", 
+                                     size="h2", 
+                                     text_align="left")
+
+st.write('Ao preencher o forms abaixo você obtem a predição do valor e a localização.')
 
 with st.form(key='formulario_nome'):
     col_1, col_2, col_3 =  st.columns(3)
@@ -75,7 +79,6 @@ with st.form(key='formulario_nome'):
         if not disponibilidade_365.isdigit() or not (0 <= int(disponibilidade_365) <= 365):
             erros.append("Disponibilidade deve ser um número entre 0 e 365.")
 
-        # Exibe mensagens de erro
         if erros:
             for erro in erros:
                 st.error(erro)
@@ -127,4 +130,19 @@ with st.form(key='formulario_nome'):
         X_predict_transformed = transformer.transform(X_predict)
 
         y_pred = model.predict(X_predict_transformed)
-        st.write(y_pred)
+
+        previsao, mapa = st.columns(2)
+        with previsao:
+            streamlit_utils.titulo_personalizado("Valor Previsto", 
+                                                 color="#0081BE", 
+                                                 size='h2', 
+                                                 text_align="left")
+            st.metric(value=round(y_pred[0],2), label='Valor Previsto', border=True)
+
+        with mapa:
+            streamlit_utils.titulo_personalizado("Localização", 
+                                                 color="#0081BE", 
+                                                 size='h2', 
+                                                 text_align="left")
+            
+            st.map(df_previsao, latitude='latitude', longitude='longitude', color='#01aaff80')
