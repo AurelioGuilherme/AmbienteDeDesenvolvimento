@@ -107,20 +107,24 @@ with st.form(key='formulario_nome'):
 
         
         features_numericas = ['numero_de_reviews',
-                              'reviews_por_mes',
-                              'calculado_host_listings_count']
+                      'reviews_por_mes',
+                      'calculado_host_listings_count',
+                      'disponibilidade_365',
+                      'latitude',
+                      'longitude',
+                      'minimo_noites']
 
-        features_categoricas = [
-            'room_type',
-            'bairro_group',
-            'minimo_noites_categorico',
-            'disponibilidade_365_categorico',
-            'ultima_review_semestre',
-            'valor_preenchido']
+        features_categoricas = ['room_type',
+                                'bairro_group',
+                                'valor_preenchido']
         
 
      
         cleaner_data = tratamento_de_dados.TransformData(df_previsao, features_categoricas, features_numericas, treino=False)
 
         X_predict, _ = cleaner_data.fit_transform()
-        st.write(X_predict)
+
+        X_predict_transformed = transformer.transform(X_predict)
+
+        y_pred = model.predict(X_predict_transformed)
+        st.write(y_pred)
