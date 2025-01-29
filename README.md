@@ -115,7 +115,7 @@ A predição é feita usando um forms no Streamlit, retornando o valor previsto 
 - Criação em uma aplicação usando o Streamlit contendo o detalhamento de forma interativa de todas as etapas do projeto.
 
 abaixo está a visualização da aplicação Streamlit:
-'''![streamlitl](streamlit.png)'''
+'''![streamlitl](imgs/streamlit.png)'''
 
 
   
